@@ -44,14 +44,14 @@ unset($_SESSION['success']);
 
 // Check if viewing own timeline
 $isOwnTimeline = ($targetUserId === $currentUser['id']);
+
+// Set page title
+$pageTitle = sanitizeOutput($targetUser['name']) . 'のTimeline';
+
+// Include header
+include 'includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo sanitizeOutput($targetUser['name']); ?>のTimeline - CAPシステム</title>
-    <link rel="stylesheet" href="assets/styles/common.css">
+
     <style>
         .container {
             max-width: 1200px;
@@ -312,20 +312,6 @@ $isOwnTimeline = ($targetUserId === $currentUser['id']);
             background: #45a049;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1>CAPシステム</h1>
-            <nav class="nav">
-                <a href="top.php">Top</a>
-                <a href="users.php">ユーザー一覧</a>
-                <?php if ($isOwnTimeline): ?>
-                    <a href="create_cap.php">CAP投稿</a>
-                <?php endif; ?>
-                <a href="logout.php">ログアウト</a>
-            </nav>
-        </header>
         
         <div class="timeline-header">
             <h2><?php echo sanitizeOutput($targetUser['name']); ?>さんのTimeline</h2>
@@ -464,6 +450,5 @@ $isOwnTimeline = ($targetUserId === $currentUser['id']);
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-    </div>
-</body>
-</html>
+
+<?php include 'includes/footer.php'; ?>
