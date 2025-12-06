@@ -180,14 +180,19 @@ function getUserCAPs($dbh, $userId, $issueId = null, $limit = null) {
 
 /**
  * Get recent CAPs for an issue (for graph display)
+ * Requirements: 5.1, 5.2
+ * 
+ * Requirement 5.1: 直近8週間のCAP履歴を取得
+ * Requirement 5.2: データ不足時の処理（存在するデータのみ返す）
  * 
  * @param PDO $dbh Database connection
  * @param int $issueId Issue ID
  * @param int $weeks Number of weeks to retrieve (default: 8)
- * @return array Array of CAPs
+ * @return array Array of CAPs (empty array if no data exists)
  */
 function getRecentCAPsForIssue($dbh, $issueId, $weeks = 8) {
     try {
+        // Requirement 5.1: 直近8週間（または指定週数）のCAP履歴を取得
         $stmt = $dbh->prepare('
             SELECT * FROM caps 
             WHERE issue_id = ? 
@@ -195,9 +200,13 @@ function getRecentCAPsForIssue($dbh, $issueId, $weeks = 8) {
             ORDER BY created_at ASC
         ');
         $stmt->execute([$issueId, $weeks]);
+        
+        // Requirement 5.2: データが存在しない場合は空配列を返す
+        // これにより、グラフ表示側で存在するデータのみを表示できる
         return $stmt->fetchAll();
     } catch (PDOException $e) {
         error_log('Error fetching recent CAPs for issue: ' . $e->getMessage());
+        // エラー時も空配列を返す（Requirement 5.2）
         return [];
     }
 }

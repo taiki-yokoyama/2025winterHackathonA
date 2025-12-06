@@ -117,13 +117,17 @@ if (empty($userIssues)) {
     exit;
 }
 
-// Get recent CAPs for each issue (for graph display - Requirement 5.1)
+// Get recent CAPs for each issue (for graph display)
+// Requirements: 5.1, 5.2
+// Requirement 5.1: 直近8週間のCAP履歴を取得
+// Requirement 5.2: データ不足時の処理（存在するデータのみ取得）
 $issuesWithHistory = [];
 foreach ($userIssues as $issue) {
+    // 各課題について直近8週間のCAP履歴を取得
     $recentCAPs = getRecentCAPsForIssue($dbh, $issue['id'], 8);
     $issuesWithHistory[] = [
         'issue' => $issue,
-        'recent_caps' => $recentCAPs
+        'recent_caps' => $recentCAPs // 空配列の場合もあり（新規課題など）
     ];
 }
 ?>
@@ -395,15 +399,35 @@ foreach ($userIssues as $issue) {
                 </div>
                 
                 <!-- Step 2: グラフ表示 (Requirement 4.2, 5.1-5.6) -->
+                <!-- Requirement 5.1: 直近8週間のCAP履歴取得 -->
+                <!-- Requirement 5.2: データ不足時の処理（存在するデータのみ表示） -->
+                <!-- Requirement 5.3: 指標タイプ別のグラフ生成ロジック -->
+                <!-- Requirement 5.4: パーセンテージ・数値: 折れ線グラフ -->
+                <!-- Requirement 5.5: 五段階尺度: 適切なグラフ形式 -->
+                <!-- Requirement 5.6: 新規Check値のプレビュー表示 -->
                 <div class="step" id="step2">
                     <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">推移グラフを確認してください</h3>
+                    <div class="note-box" style="background: #fff3cd; border-color: #ffc107; color: #856404;">
+                        <strong>グラフについて:</strong>
+                        過去8週間のデータと今回入力した値（新規）を表示しています。データが少ない場合は、存在するデータのみ表示されます。
+                    </div>
                     <?php foreach ($issuesWithHistory as $data): 
                         $issue = $data['issue'];
                         $issueId = $issue['id'];
                         $recentCAPs = $data['recent_caps'];
+                        $dataCount = count($recentCAPs);
                     ?>
                         <div class="issue-card">
                             <h3><?php echo sanitizeOutput($issue['name']); ?></h3>
+                            <?php if ($dataCount === 0): ?>
+                                <div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;">
+                                    ℹ️ この課題は初めてのCAP投稿です。今回の値のみ表示されます。
+                                </div>
+                            <?php elseif ($dataCount < 8): ?>
+                                <div style="background: #fff3cd; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px;">
+                                    ℹ️ 過去<?php echo $dataCount; ?>週分のデータと今回の値を表示しています。
+                                </div>
+                            <?php endif; ?>
                             <div class="chart-container">
                                 <div class="chart-wrapper">
                                     <canvas id="chart_<?php echo $issueId; ?>"></canvas>
