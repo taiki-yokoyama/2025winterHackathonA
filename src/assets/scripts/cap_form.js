@@ -2,7 +2,7 @@
  * CAP Form JavaScript Controller
  * 
  * Handles multi-step form navigation without page reload
- * Requirements: 4.2, 4.3, 4.4
+ * Requirements: 4.2, 4.3, 4.4, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6
  */
 
 class CAPFormController {
@@ -228,6 +228,13 @@ class CAPFormController {
     /**
      * Render charts for all issues
      * Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6
+     * 
+     * Requirement 5.1: 直近8週間のCAP履歴を取得
+     * Requirement 5.2: データ不足時の処理（存在するデータのみ表示）
+     * Requirement 5.3: 指標タイプ別のグラフ生成ロジック
+     * Requirement 5.4: パーセンテージ・数値: 折れ線グラフ
+     * Requirement 5.5: 五段階尺度: 適切なグラフ形式
+     * Requirement 5.6: 新規Check値のプレビュー表示
      */
     renderCharts() {
         if (!this.issuesData || this.issuesData.length === 0) {
@@ -237,7 +244,7 @@ class CAPFormController {
         
         this.issuesData.forEach(data => {
             const issue = data.issue;
-            const recentCAPs = data.recent_caps || [];
+            const recentCAPs = data.recent_caps || []; // Requirement 5.1: 直近8週間のデータ
             const issueId = issue.id;
             
             // Get new check value from step 1
@@ -253,6 +260,12 @@ class CAPFormController {
             const labels = [];
             const values = [];
             
+            // Requirement 5.2: データ不足時の処理（存在するデータのみ表示）
+            // 8週間分のデータがなくても、存在するデータのみでグラフを生成
+            if (recentCAPs.length === 0) {
+                console.info(`Issue ${issueId} has no historical data, showing only new value`);
+            }
+            
             // Add historical data (Requirement 5.1, 5.2)
             recentCAPs.forEach(cap => {
                 const date = new Date(cap.created_at);
@@ -263,12 +276,11 @@ class CAPFormController {
                 values.push(parseFloat(cap.value));
             });
             
-            // Add new value preview (Requirement 5.6)
+            // Requirement 5.6: 新規Check値のプレビュー表示
             labels.push('今回');
             values.push(newValue);
             
-            // Determine chart configuration based on metric type
-            // Requirement 5.3, 5.4, 5.5
+            // Requirement 5.3, 5.4, 5.5: 指標タイプ別のグラフ生成
             const chartConfig = this.getChartConfig(issue, labels, values);
             
             // Get canvas element
@@ -293,16 +305,33 @@ class CAPFormController {
     /**
      * Get chart configuration based on issue metric type
      * Requirements: 5.3, 5.4, 5.5
+     * 
+     * Requirement 5.3: 指標タイプ別のグラフ生成ロジック
+     * Requirement 5.4: パーセンテージ・数値: 折れ線グラフ
+     * Requirement 5.5: 五段階尺度: 適切なグラフ形式
+     * 
      * @param {Object} issue - Issue object
      * @param {Array} labels - Chart labels
      * @param {Array} values - Chart values
      * @returns {Object} - Chart.js configuration object
      */
     getChartConfig(issue, labels, values) {
-        // Determine chart type (Requirement 5.4, 5.5)
-        // Line chart for percentage and numeric
-        // Line chart for scale_5 as well (can be customized)
+        // Requirement 5.4, 5.5: 指標タイプに応じたグラフタイプの決定
+        // パーセンテージと数値は折れ線グラフ
+        // 五段階尺度も折れ線グラフ（離散値として表示）
         const chartType = 'line';
+        
+        // 指標タイプに応じた色の設定
+        let borderColor = '#4CAF50';
+        let backgroundColor = 'rgba(76, 175, 80, 0.1)';
+        
+        if (issue.metric_type === 'percentage') {
+            borderColor = '#2196F3';
+            backgroundColor = 'rgba(33, 150, 243, 0.1)';
+        } else if (issue.metric_type === 'scale_5') {
+            borderColor = '#FF9800';
+            backgroundColor = 'rgba(255, 152, 0, 0.1)';
+        }
         
         // Base configuration
         const config = {
@@ -312,15 +341,19 @@ class CAPFormController {
                 datasets: [{
                     label: issue.name,
                     data: values,
-                    borderColor: '#4CAF50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    borderColor: borderColor,
+                    backgroundColor: backgroundColor,
                     tension: 0.1,
                     fill: true,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    pointBackgroundColor: '#4CAF50',
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: borderColor,
                     pointBorderColor: '#fff',
-                    pointBorderWidth: 2
+                    pointBorderWidth: 2,
+                    // 最後のポイント（新規値）を強調
+                    pointStyle: values.map((_, index) => 
+                        index === values.length - 1 ? 'rectRot' : 'circle'
+                    )
                 }]
             },
             options: {
@@ -353,6 +386,13 @@ class CAPFormController {
                                     label += ' ' + issue.unit;
                                 } else if (issue.metric_type === 'percentage') {
                                     label += '%';
+                                } else if (issue.metric_type === 'scale_5') {
+                                    label += ' (5段階)';
+                                }
+                                
+                                // 新規値の場合は注釈を追加
+                                if (context.dataIndex === context.dataset.data.length - 1) {
+                                    label += ' ← 新規';
                                 }
                                 
                                 return label;
@@ -362,6 +402,7 @@ class CAPFormController {
                 },
                 scales: {
                     y: {
+                        // Requirement 5.4, 5.5: 指標タイプに応じたY軸の設定
                         beginAtZero: issue.metric_type === 'percentage' || 
                                      issue.metric_type === 'scale_5',
                         min: issue.metric_type === 'percentage' ? 0 : 
@@ -369,11 +410,28 @@ class CAPFormController {
                         max: issue.metric_type === 'percentage' ? 100 : 
                              (issue.metric_type === 'scale_5' ? 5 : undefined),
                         ticks: {
-                            stepSize: issue.metric_type === 'scale_5' ? 1 : undefined
+                            // 五段階尺度の場合は整数のみ表示
+                            stepSize: issue.metric_type === 'scale_5' ? 1 : undefined,
+                            callback: function(value) {
+                                // 五段階尺度の場合は整数のみ表示
+                                if (issue.metric_type === 'scale_5') {
+                                    return Number.isInteger(value) ? value : '';
+                                }
+                                return value;
+                            }
                         },
                         title: {
                             display: true,
                             text: this.getYAxisLabel(issue)
+                        },
+                        grid: {
+                            color: function(context) {
+                                // 五段階尺度の場合、整数値のグリッド線を強調
+                                if (issue.metric_type === 'scale_5' && Number.isInteger(context.tick.value)) {
+                                    return 'rgba(0, 0, 0, 0.2)';
+                                }
+                                return 'rgba(0, 0, 0, 0.05)';
+                            }
                         }
                     },
                     x: {

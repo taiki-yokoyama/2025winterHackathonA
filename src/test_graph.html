@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>グラフ機能テスト - CAPシステム</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #c8e6c9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>グラフ表示機能テスト</h1>
+    
+    <div class="test-section">
+        <h2>テスト1: パーセンテージ型グラフ（要件5.4）</h2>
+        <div class="info">
+            <strong>指標タイプ:</strong> percentage<br>
+            <strong>期待される動作:</strong> 0-100%の範囲で折れ線グラフが表示される
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-percentage"></canvas>
+        </div>
+        <div class="success" id="result-percentage"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト2: 五段階尺度グラフ（要件5.5）</h2>
+        <div class="info">
+            <strong>指標タイプ:</strong> scale_5<br>
+            <strong>期待される動作:</strong> 1-5の範囲で折れ線グラフが表示される（整数のみ）
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-scale5"></canvas>
+        </div>
+        <div class="success" id="result-scale5"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト3: 数値型グラフ（要件5.4）</h2>
+        <div class="info">
+            <strong>指標タイプ:</strong> numeric<br>
+            <strong>期待される動作:</strong> 任意の数値範囲で折れ線グラフが表示される
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-numeric"></canvas>
+        </div>
+        <div class="success" id="result-numeric"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト4: データ不足時の処理（要件5.2）</h2>
+        <div class="info">
+            <strong>データ:</strong> 2週分のみ<br>
+            <strong>期待される動作:</strong> 存在するデータのみでグラフが表示される
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-limited"></canvas>
+        </div>
+        <div class="success" id="result-limited"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>テスト5: 新規Check値のプレビュー（要件5.6）</h2>
+        <div class="info">
+            <strong>データ:</strong> 過去データ + 新規値<br>
+            <strong>期待される動作:</strong> 新規値が「今回」として強調表示される
+        </div>
+        <div class="chart-container">
+            <canvas id="chart-preview"></canvas>
+        </div>
+        <div class="success" id="result-preview"></div>
+    </div>
+
+    <script>
+        // テストデータ生成
+        function generateTestData(weeks, metricType) {
+            const labels = [];
+            const values = [];
+            
+            for (let i = 0; i < weeks; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - (weeks - i) * 7);
+                labels.push(date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' }));
+                
+                if (metricType === 'percentage') {
+                    values.push(Math.floor(Math.random() * 100));
+                } else if (metricType === 'scale_5') {
+                    values.push(Math.floor(Math.random() * 5) + 1);
+                } else {
+                    values.push(Math.floor(Math.random() * 100) + 50);
+                }
+            }
+            
+            return { labels, values };
+        }
+        
+        // グラフ設定生成（cap_form.jsのgetChartConfigと同様）
+        function createChartConfig(issue, labels, values) {
+            let borderColor = '#4CAF50';
+            let backgroundColor = 'rgba(76, 175, 80, 0.1)';
+            
+            if (issue.metric_type === 'percentage') {
+                borderColor = '#2196F3';
+                backgroundColor = 'rgba(33, 150, 243, 0.1)';
+            } else if (issue.metric_type === 'scale_5') {
+                borderColor = '#FF9800';
+                backgroundColor = 'rgba(255, 152, 0, 0.1)';
+            }
+            
+            return {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: issue.name,
+                        data: values,
+                        borderColor: borderColor,
+                        backgroundColor: backgroundColor,
+                        tension: 0.1,
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: borderColor,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointStyle: values.map((_, index) => 
+                            index === values.length - 1 ? 'rectRot' : 'circle'
+                        )
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        title: {
+                            display: true,
+                            text: issue.name + ' の推移',
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    label += context.parsed.y;
+                                    
+                                    if (issue.unit) {
+                                        label += ' ' + issue.unit;
+                                    } else if (issue.metric_type === 'percentage') {
+                                        label += '%';
+                                    } else if (issue.metric_type === 'scale_5') {
+                                        label += ' (5段階)';
+                                    }
+                                    
+                                    if (context.dataIndex === context.dataset.data.length - 1) {
+                                        label += ' ← 新規';
+                                    }
+                                    
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: issue.metric_type === 'percentage' || issue.metric_type === 'scale_5',
+                            min: issue.metric_type === 'percentage' ? 0 : (issue.metric_type === 'scale_5' ? 1 : undefined),
+                            max: issue.metric_type === 'percentage' ? 100 : (issue.metric_type === 'scale_5' ? 5 : undefined),
+                            ticks: {
+                                stepSize: issue.metric_type === 'scale_5' ? 1 : undefined,
+                                callback: function(value) {
+                                    if (issue.metric_type === 'scale_5') {
+                                        return Number.isInteger(value) ? value : '';
+                                    }
+                                    return value;
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: issue.metric_type === 'percentage' ? 'パーセンテージ (%)' :
+                                      issue.metric_type === 'scale_5' ? '評価 (1-5)' :
+                                      issue.unit ? '値 (' + issue.unit + ')' : '値'
+                            }
+                        },
+                        x: {
+                            title: { display: true, text: '日付' }
+                        }
+                    }
+                }
+            };
+        }
+        
+        // テスト実行
+        window.addEventListener('DOMContentLoaded', function() {
+            // テスト1: パーセンテージ
+            const test1Data = generateTestData(8, 'percentage');
+            test1Data.labels.push('今回');
+            test1Data.values.push(75);
+            const chart1 = new Chart(
+                document.getElementById('chart-percentage'),
+                createChartConfig(
+                    { name: '目標達成率', metric_type: 'percentage' },
+                    test1Data.labels,
+                    test1Data.values
+                )
+            );
+            document.getElementById('result-percentage').textContent = '✓ パーセンテージ型グラフが正常に表示されました';
+            
+            // テスト2: 五段階尺度
+            const test2Data = generateTestData(8, 'scale_5');
+            test2Data.labels.push('今回');
+            test2Data.values.push(4);
+            const chart2 = new Chart(
+                document.getElementById('chart-scale5'),
+                createChartConfig(
+                    { name: '満足度', metric_type: 'scale_5' },
+                    test2Data.labels,
+                    test2Data.values
+                )
+            );
+            document.getElementById('result-scale5').textContent = '✓ 五段階尺度グラフが正常に表示されました';
+            
+            // テスト3: 数値型
+            const test3Data = generateTestData(8, 'numeric');
+            test3Data.labels.push('今回');
+            test3Data.values.push(85);
+            const chart3 = new Chart(
+                document.getElementById('chart-numeric'),
+                createChartConfig(
+                    { name: '勉強時間', metric_type: 'numeric', unit: '分' },
+                    test3Data.labels,
+                    test3Data.values
+                )
+            );
+            document.getElementById('result-numeric').textContent = '✓ 数値型グラフが正常に表示されました';
+            
+            // テスト4: データ不足
+            const test4Data = generateTestData(2, 'percentage');
+            test4Data.labels.push('今回');
+            test4Data.values.push(60);
+            const chart4 = new Chart(
+                document.getElementById('chart-limited'),
+                createChartConfig(
+                    { name: '進捗率（データ少）', metric_type: 'percentage' },
+                    test4Data.labels,
+                    test4Data.values
+                )
+            );
+            document.getElementById('result-limited').textContent = '✓ データ不足時も正常にグラフが表示されました（2週分のみ）';
+            
+            // テスト5: 新規値プレビュー
+            const test5Data = generateTestData(5, 'numeric');
+            test5Data.labels.push('今回');
+            test5Data.values.push(120);
+            const chart5 = new Chart(
+                document.getElementById('chart-preview'),
+                createChartConfig(
+                    { name: '運動時間', metric_type: 'numeric', unit: '分' },
+                    test5Data.labels,
+                    test5Data.values
+                )
+            );
+            document.getElementById('result-preview').textContent = '✓ 新規Check値が「今回」として強調表示されました';
+        });
+    </script>
+</body>
+</html>
