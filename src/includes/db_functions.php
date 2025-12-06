@@ -117,6 +117,24 @@ function getIssueById($dbh, $issueId) {
 }
 
 /**
+ * Get CAP by ID
+ * 
+ * @param PDO $dbh Database connection
+ * @param int $capId CAP ID
+ * @return array|false CAP data or false if not found
+ */
+function getCapById($dbh, $capId) {
+    try {
+        $stmt = $dbh->prepare('SELECT * FROM caps WHERE id = ?');
+        $stmt->execute([$capId]);
+        return $stmt->fetch();
+    } catch (PDOException $e) {
+        error_log('Error fetching CAP by ID: ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
  * Create new issue
  * Requirement: 10.4
  * 
