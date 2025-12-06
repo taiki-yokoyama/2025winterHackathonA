@@ -349,4 +349,59 @@ function getLatestCheckValue($dbh, $issueId) {
         return null;
     }
 }
+
+/**
+ * Get comment count for a CAP
+ * Requirement: 6.3
+ * 
+ * @param PDO $dbh Database connection
+ * @param int $capId CAP ID
+ * @return int Comment count
+ */
+function getCommentCountForCAP($dbh, $capId) {
+    try {
+        $stmt = $dbh->prepare('SELECT COUNT(*) as count FROM comments WHERE to_cap_id = ?');
+        $stmt->execute([$capId]);
+        $result = $stmt->fetch();
+        return $result ? (int)$result['count'] : 0;
+    } catch (PDOException $e) {
+        error_log('Error fetching comment count: ' . $e->getMessage());
+        return 0;
+    }
+}
+
+/**
+ * Get CAPs with comment counts for timeline display
+ * Requirements: 6.1, 6.2, 6.3
+ * 
+ * @param PDO $dbh Database connection
+ * @param int $userId User ID
+ * @param int|null $issueId Optional issue ID to filter by
+ * @return array Array of CAPs with issue information and comment counts
+ */
+function getCAPsForTimeline($dbh, $userId, $issueId = null) {
+    try {
+        $sql = 'SELECT c.*, i.name as issue_name, i.metric_type, i.unit,
+                       (SELECT COUNT(*) FROM comments WHERE to_cap_id = c.id) as comment_count
+                FROM caps c 
+                JOIN issues i ON c.issue_id = i.id 
+                WHERE c.user_id = ?';
+        
+        $params = [$userId];
+        
+        if ($issueId !== null) {
+            $sql .= ' AND c.issue_id = ?';
+            $params[] = $issueId;
+        }
+        
+        $sql .= ' ORDER BY c.created_at DESC';
+        
+        $stmt = $dbh->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        error_log('Error fetching CAPs for timeline: ' . $e->getMessage());
+        return [];
+    }
+}
 ?>
