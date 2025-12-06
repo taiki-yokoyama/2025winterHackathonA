@@ -135,6 +135,7 @@ foreach ($userIssues as $issue) {
     <title>CAP投稿作成 - CAPシステム</title>
     <link rel="stylesheet" href="assets/styles/common.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/scripts/cap_form.js" defer></script>
     <style>
         .container {
             max-width: 1200px;
@@ -486,131 +487,8 @@ foreach ($userIssues as $issue) {
     </div>
     
     <script>
-        // Store issue data for JavaScript
+        // Store issue data for JavaScript (Requirement 4.3)
         const issuesData = <?php echo json_encode($issuesWithHistory); ?>;
-        
-        let currentStep = 1;
-        const totalSteps = 4;
-        
-        // Step navigation (Requirement 4.3)
-        function showStep(step) {
-            // Hide all steps
-            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-            
-            // Show current step
-            document.getElementById('step' + step).classList.add('active');
-            
-            // Update step indicator
-            const stepNames = ['Check値の入力', 'グラフ確認', 'Action入力', 'Plan入力'];
-            document.getElementById('stepIndicator').textContent = 
-                `ステップ ${step}/${totalSteps}: ${stepNames[step - 1]}`;
-            
-            // Update button visibility
-            document.getElementById('btnPrev').style.display = step > 1 ? 'block' : 'none';
-            document.getElementById('btnNext').style.display = step < totalSteps ? 'block' : 'none';
-            document.getElementById('btnSubmit').style.display = step === totalSteps ? 'block' : 'none';
-            
-            // If moving to step 2, render charts
-            if (step === 2) {
-                renderCharts();
-            }
-        }
-        
-        // Next button (Requirement 4.3)
-        document.getElementById('btnNext').addEventListener('click', function() {
-            if (currentStep < totalSteps) {
-                currentStep++;
-                showStep(currentStep);
-            }
-        });
-        
-        // Previous button (Requirement 4.4)
-        document.getElementById('btnPrev').addEventListener('click', function() {
-            if (currentStep > 1) {
-                currentStep--;
-                showStep(currentStep);
-            }
-        });
-        
-        // Render charts for all issues (Requirement 5.1-5.6)
-        function renderCharts() {
-            issuesData.forEach(data => {
-                const issue = data.issue;
-                const recentCAPs = data.recent_caps;
-                const issueId = issue.id;
-                
-                // Get new check value
-                const newValue = parseFloat(document.getElementById('value_' + issueId).value);
-                
-                // Prepare chart data
-                const labels = [];
-                const values = [];
-                
-                // Add historical data
-                recentCAPs.forEach(cap => {
-                    const date = new Date(cap.created_at);
-                    labels.push(date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' }));
-                    values.push(parseFloat(cap.value));
-                });
-                
-                // Add new value preview (Requirement 5.6)
-                labels.push('今回');
-                values.push(newValue);
-                
-                // Determine chart type based on metric type
-                const chartType = (issue.metric_type === 'percentage' || issue.metric_type === 'numeric') 
-                    ? 'line' : 'line'; // Using line for all types for simplicity
-                
-                // Create chart
-                const ctx = document.getElementById('chart_' + issueId).getContext('2d');
-                
-                // Destroy existing chart if it exists
-                if (window['chart_' + issueId]) {
-                    window['chart_' + issueId].destroy();
-                }
-                
-                window['chart_' + issueId] = new Chart(ctx, {
-                    type: chartType,
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: issue.name,
-                            data: values,
-                            borderColor: '#4CAF50',
-                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                            tension: 0.1,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
-                            title: {
-                                display: true,
-                                text: issue.name + ' の推移'
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: issue.metric_type === 'percentage' || issue.metric_type === 'scale_5',
-                                min: issue.metric_type === 'percentage' ? 0 : 
-                                     (issue.metric_type === 'scale_5' ? 1 : undefined),
-                                max: issue.metric_type === 'percentage' ? 100 : 
-                                     (issue.metric_type === 'scale_5' ? 5 : undefined)
-                            }
-                        }
-                    }
-                });
-            });
-        }
-        
-        // Initialize
-        showStep(currentStep);
     </script>
 </body>
 </html>
