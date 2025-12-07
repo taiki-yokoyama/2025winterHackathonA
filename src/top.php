@@ -81,7 +81,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -125,7 +125,7 @@ include 'includes/header.php';
             color: #333;
         }
         .btn-create {
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
@@ -134,7 +134,7 @@ include 'includes/header.php';
             transition: background 0.3s;
         }
         .btn-create:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
         .issues-list {
             list-style: none;
@@ -252,7 +252,7 @@ include 'includes/header.php';
             text-align: right;
         }
         .comment-link {
-            color: #2196F3;
+            color: #f3c7c4;
             text-decoration: none;
             font-size: 14px;
             transition: color 0.3s;

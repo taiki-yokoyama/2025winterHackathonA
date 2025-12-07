@@ -52,7 +52,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -107,7 +107,7 @@ include 'includes/header.php';
             background: #fff;
         }
         .user-card.current-user {
-            border: 2px solid #4CAF50;
+            border: 2px solid #f3c7c4;
             background: #f1f8f4;
         }
         .user-card.current-user:hover {
@@ -133,7 +133,7 @@ include 'includes/header.php';
             flex-shrink: 0;
         }
         .user-card.current-user .user-avatar {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: linear-gradient(135deg, #f3c7c4 0%, #e0a7a4 100%);
         }
         .user-info {
             flex: 1;
@@ -158,7 +158,7 @@ include 'includes/header.php';
         .user-badge {
             display: inline-block;
             padding: 4px 10px;
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
             border-radius: 12px;
             font-size: 12px;
@@ -178,7 +178,7 @@ include 'includes/header.php';
         }
         .view-timeline-btn {
             padding: 8px 16px;
-            background: #2196F3;
+            background: #f3c7c4;
             color: white;
             text-decoration: none;
             border-radius: 4px;
@@ -188,13 +188,13 @@ include 'includes/header.php';
             display: inline-block;
         }
         .view-timeline-btn:hover {
-            background: #0b7dda;
+            background: #e0a7a4;
         }
         .user-card.current-user .view-timeline-btn {
-            background: #4CAF50;
+            background: #f3c7c4;
         }
         .user-card.current-user .view-timeline-btn:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
         .empty-state {
             text-align: center;
@@ -215,14 +215,14 @@ include 'includes/header.php';
             text-align: center;
         }
         .users-count strong {
-            color: #2196F3;
+            color: #f3c7c4;
             font-size: 18px;
         }
     </style>
         
         <div class="page-header">
             <h2 style="display: flex; align-items: center; gap: 10px;">
-                <i data-lucide="users" style="width: 28px; height: 28px; color: #2196F3;"></i>
+                <i data-lucide="users" style="width: 28px; height: 28px; color: #f3c7c4;"></i>
                 <span>ユーザー一覧</span>
             </h2>
             <p>他のユーザーのTimelineを閲覧して、改善活動を参考にしましょう。</p>

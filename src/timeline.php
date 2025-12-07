@@ -76,7 +76,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -129,17 +129,17 @@ include 'includes/header.php';
             background: #e0e0e0;
         }
         .issue-tab.active {
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .issue-tab.all {
-            background: #2196F3;
+            background: #f3c7c4;
             color: white;
-            border-color: #2196F3;
+            border-color: #f3c7c4;
         }
         .issue-tab.all:hover {
-            background: #0b7dda;
+            background: #e0a7a4;
         }
         /* CAP cards (Requirement 6.2) */
         .cap-list {
@@ -165,7 +165,7 @@ include 'includes/header.php';
         .cap-issue-name {
             font-size: 20px;
             font-weight: bold;
-            color: #4CAF50;
+            color: #f3c7c4;
             margin: 0 0 5px 0;
         }
         .cap-date {
@@ -183,7 +183,7 @@ include 'includes/header.php';
         .cap-check-number {
             font-size: 32px;
             font-weight: bold;
-            color: #2196F3;
+            color: #f3c7c4;
         }
         .cap-check-unit {
             font-size: 16px;
@@ -236,7 +236,7 @@ include 'includes/header.php';
             background: #f0f7ff;
             padding: 15px;
             border-radius: 4px;
-            border-left: 4px solid #2196F3;
+            border-left: 4px solid #f3c7c4;
         }
         .comment-header {
             display: flex;
@@ -245,7 +245,7 @@ include 'includes/header.php';
         }
         .comment-author {
             font-weight: bold;
-            color: #2196F3;
+            color: #f3c7c4;
         }
         .comment-date {
             font-size: 12px;
@@ -275,7 +275,7 @@ include 'includes/header.php';
         .comment-form button {
             margin-top: 10px;
             padding: 8px 20px;
-            background: #2196F3;
+            background: #f3c7c4;
             color: white;
             border: none;
             border-radius: 4px;
@@ -283,7 +283,7 @@ include 'includes/header.php';
             font-weight: bold;
         }
         .comment-form button:hover {
-            background: #0b7dda;
+            background: #e0a7a4;
         }
         .empty-state {
             text-align: center;
@@ -302,14 +302,14 @@ include 'includes/header.php';
             display: inline-block;
             margin-top: 20px;
             padding: 12px 24px;
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
             text-decoration: none;
             border-radius: 4px;
             font-weight: bold;
         }
         .btn-create-cap:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
     </style>
         

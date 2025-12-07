@@ -104,7 +104,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -145,7 +145,7 @@ include 'includes/header.php';
         }
         .form-input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .form-select {
             width: 100%;
@@ -158,7 +158,7 @@ include 'includes/header.php';
         }
         .form-select:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .form-help {
             font-size: 14px;
@@ -189,7 +189,7 @@ include 'includes/header.php';
         .btn-submit {
             width: 100%;
             padding: 12px;
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
             border: none;
             border-radius: 4px;
@@ -198,7 +198,7 @@ include 'includes/header.php';
             font-weight: bold;
         }
         .btn-submit:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
         .btn-cancel {
             width: 100%;
@@ -247,7 +247,7 @@ include 'includes/header.php';
         
         <div class="form-container">
             <h2 class="form-title" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <i data-lucide="plus-circle" style="width: 28px; height: 28px; color: #4CAF50;"></i>
+                <i data-lucide="plus-circle" style="width: 28px; height: 28px; color: #f3c7c4;"></i>
                 <span>新しい課題を作成</span>
             </h2>
             

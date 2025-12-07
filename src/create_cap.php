@@ -163,7 +163,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -208,7 +208,7 @@ include 'includes/header.php';
         .issue-card h3 {
             margin-top: 0;
             color: #333;
-            border-bottom: 2px solid #4CAF50;
+            border-bottom: 2px solid #f3c7c4;
             padding-bottom: 10px;
         }
         .issue-meta {
@@ -235,7 +235,7 @@ include 'includes/header.php';
         }
         .form-input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .form-textarea {
             width: 100%;
@@ -249,7 +249,7 @@ include 'includes/header.php';
         }
         .form-textarea:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .chart-container {
             margin: 20px 0;
@@ -276,18 +276,18 @@ include 'includes/header.php';
             font-weight: bold;
         }
         .btn-primary {
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
         }
         .btn-primary:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
         .btn-secondary {
-            background: #2196F3;
+            background: #f3c7c4;
             color: white;
         }
         .btn-secondary:hover {
-            background: #0b7dda;
+            background: #e0a7a4;
         }
         .btn-cancel {
             background: #9E9E9E;
@@ -310,7 +310,7 @@ include 'includes/header.php';
         }
         .note-box {
             background: #e3f2fd;
-            border: 1px solid #2196F3;
+            border: 1px solid #f3c7c4;
             color: #0d47a1;
             padding: 15px;
             border-radius: 4px;
@@ -344,7 +344,7 @@ include 'includes/header.php';
             <form method="POST" action="create_cap.php" id="capForm">
                 <!-- Step 1: Check値入力 (Requirement 4.2) -->
                 <div class="step active" id="step1">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">全ての課題のCheck値を入力してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">全ての課題のCheck値を入力してください</h3>
                     <?php foreach ($issuesWithHistory as $data): 
                         $issue = $data['issue'];
                         $issueId = $issue['id'];
@@ -394,7 +394,7 @@ include 'includes/header.php';
                 <!-- Requirement 5.5: 五段階尺度: 適切なグラフ形式 -->
                 <!-- Requirement 5.6: 新規Check値のプレビュー表示 -->
                 <div class="step" id="step2">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">推移グラフを確認してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">推移グラフを確認してください</h3>
                     <div class="note-box" style="background: #fff3cd; border-color: #ffc107; color: #856404;">
                         <strong>グラフについて:</strong>
                         過去8週間のデータと今回入力した値（新規）を表示しています。データが少ない場合は、存在するデータのみ表示されます。
@@ -427,7 +427,7 @@ include 'includes/header.php';
                 
                 <!-- Step 3: Action入力 (Requirement 4.2) -->
                 <div class="step" id="step3">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">分析と改善方向を入力してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">分析と改善方向を入力してください</h3>
                     <?php foreach ($issuesWithHistory as $data): 
                         $issue = $data['issue'];
                         $issueId = $issue['id'];
@@ -464,7 +464,7 @@ include 'includes/header.php';
                 
                 <!-- Step 4: Plan入力 (Requirement 4.2) -->
                 <div class="step" id="step4">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">次の計画を入力してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">次の計画を入力してください</h3>
                     <?php foreach ($issuesWithHistory as $data): 
                         $issue = $data['issue'];
                         $issueId = $issue['id'];
