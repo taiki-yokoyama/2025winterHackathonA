@@ -43,7 +43,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         $logoFile = __DIR__ . '/../' . $logoRel;
                     ?>
                     <?php if (file_exists($logoFile)): ?>
-                        <img src="<?php echo $logoRel; ?>" alt="OURO" style="height:88px; display:block;">
+                        <img src="<?php echo $logoRel; ?>" alt="OURO" style="height:88px; display:block; transform: scale(1.3);">
                     <?php else: ?>
                         <span>OURO</span>
                     <?php endif; ?>
