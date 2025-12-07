@@ -37,6 +37,10 @@ body {
     font-weight: bold;
 }
 
+.logo i {
+    color: #4CAF50;
+}
+
 .nav {
     display: flex;
     gap: 20px;
@@ -50,6 +54,9 @@ body {
     border-radius: 4px;
     transition: all 0.3s;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .nav a:hover {
@@ -62,6 +69,11 @@ body {
     color: white;
 }
 
+.nav-icon {
+    width: 18px;
+    height: 18px;
+}
+
 /* ===== Buttons ===== */
 .btn {
     padding: 12px 24px;
@@ -72,8 +84,11 @@ body {
     font-weight: bold;
     transition: all 0.3s;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     text-align: center;
+    justify-content: center;
 }
 
 .btn-primary {
@@ -115,13 +130,43 @@ body {
     border-radius: 4px;
     font-weight: bold;
     transition: all 0.3s;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-create:hover {
     background: #45a049;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px 24px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    background: #0b7dda;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
 }
 
 /* ===== Forms ===== */
@@ -909,4 +954,53 @@ body {
 
 .mb-20 {
     margin-bottom: 20px;
+}
+
+/* ===== Icon Utilities ===== */
+.icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-md {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-lg {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-xl {
+    width: 32px;
+    height: 32px;
+}
+
+/* Icon colors */
+.icon-primary {
+    color: #2196F3;
+}
+
+.icon-success {
+    color: #4CAF50;
+}
+
+.icon-warning {
+    color: #FF9800;
+}
+
+.icon-danger {
+    color: #f44336;
+}
+
+.icon-muted {
+    color: #999;
 }

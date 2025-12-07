@@ -12,49 +12,16 @@
 - **指標タイプ**: Issueの測定方法を示す種類（パーセンテージ、五段階尺度、数値）
 - **Timeline**: ユーザーのCAP投稿履歴をissue別にタブ切り替えで時系列で表示する画面
 - **コメント**: 他のユーザーがCAP投稿に対して付けるフィードバック
+- **Lucideアイコン**: UIで使用するアイコンライブラリ
 
-## データベース設計
+## データモデル参照
 
-### usersテーブル
-| カラム名 | データ型 | 制約 | 説明 |
-|---------|---------|------|------|
-| id | INT | PRIMARY KEY, AUTO_INCREMENT | ユーザーID |
-| email | VARCHAR(255) | UNIQUE, NOT NULL | メールアドレス |
-| password | VARCHAR(255) | NOT NULL | パスワード（平文、プロトタイプのため） |
-| name | VARCHAR(100) | NOT NULL | ユーザー名 |
-| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 作成日時 |
+データベーススキーマの詳細は設計書を参照してください。主要なエンティティは以下の通りです：
 
-### issuesテーブル
-| カラム名 | データ型 | 制約 | 説明 |
-|---------|---------|------|------|
-| id | INT | PRIMARY KEY, AUTO_INCREMENT | 課題ID |
-| user_id | INT | FOREIGN KEY (users.id), NOT NULL | ユーザーID |
-| name | VARCHAR(255) | NOT NULL | 課題名 |
-| metric_type | ENUM('percentage', 'scale_5', 'numeric') | NOT NULL | 指標タイプ |
-| unit | VARCHAR(50) | NULL | 単位（数値型の場合のみ使用、例：「回」「cm」） |
-| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 作成日時 |
-
-### capsテーブル
-| カラム名 | データ型 | 制約 | 説明 |
-|---------|---------|------|------|
-| id | INT | PRIMARY KEY, AUTO_INCREMENT | CAP ID |
-| user_id | INT | FOREIGN KEY (users.id), NOT NULL | ユーザーID |
-| issue_id | INT | FOREIGN KEY (issues.id), NOT NULL | 課題ID |
-| value | DECIMAL(10,2) | NOT NULL | Check値（実測値） |
-| analysis | TEXT | NOT NULL | 分析内容 |
-| improve_direction | TEXT | NOT NULL | 改善方向 |
-| plan | TEXT | NOT NULL | 次の計画 |
-| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 作成日時 |
-
-### commentsテーブル
-| カラム名 | データ型 | 制約 | 説明 |
-|---------|---------|------|------|
-| id | INT | PRIMARY KEY, AUTO_INCREMENT | コメントID |
-| from_user_id | INT | FOREIGN KEY (users.id), NOT NULL | コメント送信者ID |
-| to_user_id | INT | FOREIGN KEY (users.id), NOT NULL | コメント受信者ID |
-| to_cap_id | INT | FOREIGN KEY (caps.id), NOT NULL | コメント対象CAP ID |
-| comment | TEXT | NOT NULL | コメント内容 |
-| created_at | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 作成日時 |
+- **users**: ユーザーアカウント情報
+- **issues**: ユーザーが追跡する改善課題
+- **caps**: Check-Action-Plan投稿レコード
+- **comments**: CAP投稿に対するユーザーコメント
 
 ## 要件
 
@@ -93,7 +60,7 @@
 4. WHEN 指標タイプが選択される THEN CAPシステムは、パーセンテージ、五段階尺度、数値のいずれかを保存しなければならない
 5. WHEN 指標タイプが数値である THEN CAPシステムは、オプションで単位（例：「回」「cm」）を保存しなければならない
 6. WHEN 課題が作成される THEN CAPシステムは、作成タイムスタンプを記録し、ユーザーをTop画面にリダイレクトしなければならない
-7. WHEN 課題が作成された後 THEN CAPシステムは、その課題の編集および削除を許可してはならない
+7. WHEN 課題が作成された後 THEN CAPシステムは、その課題を読み取り専用として扱わなければならない
 
 ### 要件4
 
@@ -110,7 +77,7 @@
 7. WHEN サーバーがデータを受信する THEN CAPシステムは、各課題に対して個別のCAPレコードをcapsテーブルに作成しなければならない
 8. WHEN CAPレコードが作成される THEN CAPシステムは、user_id、issue_id、value、analysis、improve_direction、planを保存しなければならない
 9. WHEN CAP投稿が成功する THEN CAPシステムは、ユーザーをTimeline画面にリダイレクトしなければならない
-10. WHEN CAP投稿が作成された後 THEN CAPシステムは、そのCAP投稿の編集および削除を許可してはならない
+10. WHEN CAP投稿が作成された後 THEN CAPシステムは、そのCAP投稿を読み取り専用として扱わなければならない
 
 ### 要件5
 
@@ -174,6 +141,15 @@
 3. WHEN ユーザーが一覧から特定のユーザーを選択する THEN CAPシステムは、そのユーザーのTimeline画面にリダイレクトしなければならない
 
 ### 要件10
+
+**ユーザーストーリー:** ユーザーとして、視覚的に分かりやすいUIを利用したい。そうすることで、直感的にシステムを操作できる。
+
+#### 受入基準
+
+1. WHEN UIにアイコンが必要な場合 THEN CAPシステムは、Lucideアイコンライブラリからアイコンを使用しなければならない
+2. WHEN ロゴが表示される THEN CAPシステムは、Lucideアイコンを使用してロゴを表示しなければならない
+
+### 要件11
 
 **ユーザーストーリー:** システム管理者として、データベースにユーザー、課題、CAP、コメントを永続化したい。そうすることで、データの整合性を保ちながら長期的に管理できる。
 

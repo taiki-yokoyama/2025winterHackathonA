@@ -280,7 +280,10 @@ include 'includes/header.php';
             <p>CAPシステムへようこそ。継続的改善サイクルを記録・追跡しましょう。</p>
             <?php if (!empty($issues)): ?>
                 <p style="margin-top: 15px;">
-                    <a href="create_cap.php" class="btn-create" style="display: inline-block;">📝 CAP投稿を作成</a>
+                    <a href="create_cap.php" class="btn-create" style="display: inline-flex;">
+                        <i data-lucide="edit" class="btn-icon"></i>
+                        <span>CAP投稿を作成</span>
+                    </a>
                 </p>
             <?php endif; ?>
         </div>
@@ -295,12 +298,17 @@ include 'includes/header.php';
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">あなたの課題</h2>
-                <a href="create_issue.php" class="btn-create">+ 新しい課題を作成</a>
+                <a href="create_issue.php" class="btn-create">
+                    <i data-lucide="plus-circle" class="btn-icon"></i>
+                    <span>新しい課題を作成</span>
+                </a>
             </div>
             
             <?php if (empty($issues)): ?>
                 <div class="empty-state">
-                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-icon">
+                        <i data-lucide="clipboard" style="width: 64px; height: 64px; color: #ccc;"></i>
+                    </div>
                     <p>まだ課題が登録されていません。</p>
                     <p>「新しい課題を作成」ボタンから最初の課題を作成しましょう。</p>
                 </div>
@@ -372,7 +380,9 @@ include 'includes/header.php';
             
             <?php if (empty($comments)): ?>
                 <div class="empty-state">
-                    <div class="empty-state-icon">💬</div>
+                    <div class="empty-state-icon">
+                        <i data-lucide="message-circle" style="width: 64px; height: 64px; color: #ccc;"></i>
+                    </div>
                     <p>まだコメントがありません。</p>
                 </div>
             <?php else: ?>
@@ -395,8 +405,9 @@ include 'includes/header.php';
                                 <?php echo nl2br(sanitizeOutput($comment['comment'])); ?>
                             </div>
                             <div class="comment-actions">
-                                <a href="timeline.php?user_id=<?php echo $currentUser['id']; ?>" class="comment-link">
-                                    Timelineで確認 →
+                                <a href="timeline.php?user_id=<?php echo $currentUser['id']; ?>" class="comment-link" style="display: inline-flex; align-items: center; gap: 5px;">
+                                    <span>Timelineで確認</span>
+                                    <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
                                 </a>
                             </div>
                         </div>
@@ -413,7 +424,9 @@ include 'includes/header.php';
             
             <?php if (empty($issues)): ?>
                 <div class="empty-state">
-                    <div class="empty-state-icon">📊</div>
+                    <div class="empty-state-icon">
+                        <i data-lucide="bar-chart-2" style="width: 64px; height: 64px; color: #ccc;"></i>
+                    </div>
                     <p>課題を作成すると、ここに推移グラフが表示されます。</p>
                 </div>
             <?php else: ?>

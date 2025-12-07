@@ -349,11 +349,16 @@ include 'includes/header.php';
         <!-- CAP list (Requirement 6.1, 6.2, 6.3) -->
         <?php if (empty($caps)): ?>
             <div class="empty-state">
-                <div class="empty-state-icon">📝</div>
+                <div class="empty-state-icon">
+                    <i data-lucide="file-text" style="width: 64px; height: 64px; color: #ccc;"></i>
+                </div>
                 <h3>CAP投稿がありません</h3>
                 <?php if ($isOwnTimeline): ?>
                     <p>最初のCAP投稿を作成しましょう。</p>
-                    <a href="create_cap.php" class="btn-create-cap">CAP投稿を作成</a>
+                    <a href="create_cap.php" class="btn-create-cap" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <i data-lucide="edit" style="width: 18px; height: 18px;"></i>
+                        <span>CAP投稿を作成</span>
+                    </a>
                 <?php else: ?>
                     <p><?php echo sanitizeOutput($targetUser['name']); ?>さんはまだCAP投稿をしていません。</p>
                 <?php endif; ?>
@@ -386,17 +391,26 @@ include 'includes/header.php';
                         <!-- CAP content (Requirement 6.2) -->
                         <div class="cap-content">
                             <div class="cap-section">
-                                <div class="cap-section-title">📊 分析</div>
+                                <div class="cap-section-title" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="bar-chart" style="width: 16px; height: 16px;"></i>
+                                    <span>分析</span>
+                                </div>
                                 <div class="cap-section-content"><?php echo sanitizeOutput($cap['analysis']); ?></div>
                             </div>
                             
                             <div class="cap-section">
-                                <div class="cap-section-title">🎯 改善方向</div>
+                                <div class="cap-section-title" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="target" style="width: 16px; height: 16px;"></i>
+                                    <span>改善方向</span>
+                                </div>
                                 <div class="cap-section-content"><?php echo sanitizeOutput($cap['improve_direction']); ?></div>
                             </div>
                             
                             <div class="cap-section">
-                                <div class="cap-section-title">📝 計画</div>
+                                <div class="cap-section-title" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="clipboard-list" style="width: 16px; height: 16px;"></i>
+                                    <span>計画</span>
+                                </div>
                                 <div class="cap-section-content"><?php echo sanitizeOutput($cap['plan']); ?></div>
                             </div>
                         </div>
@@ -404,8 +418,9 @@ include 'includes/header.php';
                         <!-- Comments section (Requirement 6.3, 6.6, 7.5) -->
                         <div class="cap-comments">
                             <div class="comments-header">
-                                <div class="comments-count">
-                                    💬 コメント (<?php echo $cap['comment_count']; ?>)
+                                <div class="comments-count" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
+                                    <span>コメント (<?php echo $cap['comment_count']; ?>)</span>
                                 </div>
                             </div>
                             
@@ -442,7 +457,10 @@ include 'includes/header.php';
                                     <input type="hidden" name="to_cap_id" value="<?php echo $cap['id']; ?>">
                                     <input type="hidden" name="to_user_id" value="<?php echo $targetUserId; ?>">
                                     <textarea name="comment" placeholder="コメントを入力..." required></textarea>
-                                    <button type="submit">コメントを投稿</button>
+                                    <button type="submit" style="display: inline-flex; align-items: center; gap: 6px;">
+                                        <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                                        <span>コメントを投稿</span>
+                                    </button>
                                 </form>
                             <?php endif; ?>
                         </div>
