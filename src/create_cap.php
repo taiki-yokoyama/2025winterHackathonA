@@ -3,6 +3,7 @@
  * Create CAP Page for CAP System
  * 
  * Handles CAP creation for multiple issues simultaneously.
+ * Now includes peer evaluation feature for team members.
  * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10
  */
 
@@ -14,10 +15,14 @@ requireAuth();
 // Get current user
 $currentUser = getCurrentUser($dbh);
 
+// Get team members (excluding current user)
+$teamMembers = getTeamMembers($dbh, $currentUser['team_id'], $currentUser['id']);
+
 // Handle form submission (Requirement 4.6, 4.7, 4.8)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
     $capsData = [];
+    $peerEvaluationsData = [];
     
     // Get all issues for validation
     $userIssues = getUserIssues($dbh, $currentUser['id']);
@@ -60,12 +65,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'improve_direction' => $improveDirection,
                 'plan' => $plan
             ];
+            
+            // Collect peer evaluations for this issue
+            foreach ($teamMembers as $member) {
+                $peerValueKey = "peer_value_{$issueId}_{$member['id']}";
+                if (isset($_POST[$peerValueKey]) && $_POST[$peerValueKey] !== '') {
+                    $peerValue = $_POST[$peerValueKey];
+                    if (validateNumeric($peerValue)) {
+                        $peerEvaluationsData[] = [
+                            'target_user_id' => $member['id'],
+                            'issue_id' => $issueId,
+                            'value' => $peerValue
+                        ];
+                    }
+                }
+            }
         }
     }
     
-    // If validation passes, create all CAPs (Requirement 4.7, 4.8)
+    // If validation passes, create all CAPs and peer evaluations (Requirement 4.7, 4.8)
     if (empty($errors)) {
         $allSuccess = true;
+        $createdCapIds = [];
         
         foreach ($capsData as $capData) {
             $capId = createCAP(
@@ -81,6 +102,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$capId) {
                 $allSuccess = false;
                 break;
+            }
+            
+            $createdCapIds[$capData['issue_id']] = $capId;
+        }
+        
+        // Create peer evaluations
+        if ($allSuccess && !empty($peerEvaluationsData)) {
+            foreach ($peerEvaluationsData as $peerData) {
+                $capIdForPeer = $createdCapIds[$peerData['issue_id']] ?? null;
+                $peerId = createPeerEvaluation(
+                    $dbh,
+                    $currentUser['id'],
+                    $peerData['target_user_id'],
+                    $peerData['issue_id'],
+                    $peerData['value'],
+                    $capIdForPeer
+                );
+                
+                if (!$peerId) {
+                    // Log error but don't fail the entire operation
+                    error_log('Failed to create peer evaluation');
+                }
             }
         }
         
@@ -362,9 +405,12 @@ include 'includes/header.php';
                                     echo $typeLabels[$issue['metric_type']];
                                 ?>
                             </div>
+                            
+                            <!-- 自分のCheck値 -->
                             <div class="form-group">
                                 <label for="value_<?php echo $issueId; ?>" class="form-label">
-                                    Check値 <span style="color: red;">*</span>
+                                    <i data-lucide="user" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i>
+                                    あなたのCheck値 <span style="color: red;">*</span>
                                 </label>
                                 <input 
                                     type="number" 
@@ -382,6 +428,40 @@ include 'includes/header.php';
                                     <?php endif; ?>
                                 >
                             </div>
+                            
+                            <!-- チームメンバーへの評価 -->
+                            <?php if (!empty($teamMembers)): ?>
+                            <div class="peer-evaluation-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ddd;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                                    <i data-lucide="users" style="width: 18px; height: 18px; color: #2196F3;"></i>
+                                    <strong style="color: #555;">チームメンバーへの評価</strong>
+                                    <span style="font-size: 12px; color: #999;">(任意)</span>
+                                </div>
+                                <div class="peer-members-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                                    <?php foreach ($teamMembers as $member): ?>
+                                    <div class="peer-member-item" style="background: #f9f9f9; padding: 12px; border-radius: 6px;">
+                                        <label for="peer_value_<?php echo $issueId; ?>_<?php echo $member['id']; ?>" style="display: block; margin-bottom: 8px; font-size: 14px; color: #333;">
+                                            <?php echo sanitizeOutput($member['name']); ?>さん
+                                        </label>
+                                        <input 
+                                            type="number" 
+                                            step="0.01"
+                                            id="peer_value_<?php echo $issueId; ?>_<?php echo $member['id']; ?>" 
+                                            name="peer_value_<?php echo $issueId; ?>_<?php echo $member['id']; ?>" 
+                                            class="form-input peer-value" 
+                                            style="font-size: 14px; padding: 8px;"
+                                            placeholder="評価値"
+                                            <?php if ($issue['metric_type'] === 'percentage'): ?>
+                                                min="0" max="100"
+                                            <?php elseif ($issue['metric_type'] === 'scale_5'): ?>
+                                                min="1" max="5" step="1"
+                                            <?php endif; ?>
+                                        >
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
