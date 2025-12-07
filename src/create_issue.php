@@ -282,7 +282,7 @@ include 'includes/header.php';
                         name="name" 
                         class="form-input" 
                         value="<?php echo sanitizeOutput($formData['name'] ?? ''); ?>"
-                        placeholder="例: 体重管理、勉強時間、睡眠時間"
+                        placeholder="例: 稼働時間が足りない、本音が言えていない"
                         required
                         maxlength="255"
                     >
@@ -316,8 +316,8 @@ include 'includes/header.php';
                         <strong>指標タイプについて:</strong>
                         <ul>
                             <li><strong>パーセンテージ:</strong> 達成率や進捗率など（例: 目標達成率 75%）</li>
-                            <li><strong>五段階尺度:</strong> 満足度や評価など（例: 睡眠の質 4/5）</li>
-                            <li><strong>数値:</strong> 具体的な数値で測定（例: 体重 65kg、勉強時間 120分）</li>
+                            <li><strong>五段階尺度:</strong> 満足度や評価など（例: どれだけできたか 4/5）</li>
+                            <li><strong>数値:</strong> 具体的な数値で測定（例: 稼働時間 120分）</li>
                         </ul>
                     </div>
                 </div>
