@@ -294,7 +294,7 @@ include 'includes/header.php';
         
         <div class="welcome">
             <h2>ようこそ、<?php echo sanitizeOutput($currentUser['name']); ?>さん</h2>
-            <p>CAPシステムへようこそ。継続的改善サイクルを記録・追跡しましょう。</p>
+            <p>OUROへようこそ。継続的改善サイクルを記録・追跡しましょう。</p>
             <?php if (!empty($issues)): ?>
                 <p style="margin-top: 15px;">
                     <a href="create_cap.php" class="btn-create" style="display: inline-flex;">
