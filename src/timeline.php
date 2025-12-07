@@ -76,7 +76,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -129,17 +129,17 @@ include 'includes/header.php';
             background: #e0e0e0;
         }
         .issue-tab.active {
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .issue-tab.all {
-            background: #2196F3;
+            background: #f3c7c4;
             color: white;
-            border-color: #2196F3;
+            border-color: #f3c7c4;
         }
         .issue-tab.all:hover {
-            background: #0b7dda;
+            background: #e0a7a4;
         }
         /* CAP cards (Requirement 6.2) */
         .cap-list {
@@ -165,7 +165,7 @@ include 'includes/header.php';
         .cap-issue-name {
             font-size: 20px;
             font-weight: bold;
-            color: #4CAF50;
+            color: #f3c7c4;
             margin: 0 0 5px 0;
         }
         .cap-date {
@@ -183,7 +183,7 @@ include 'includes/header.php';
         .cap-check-number {
             font-size: 32px;
             font-weight: bold;
-            color: #2196F3;
+            color: #f3c7c4;
         }
         .cap-check-unit {
             font-size: 16px;
@@ -236,7 +236,7 @@ include 'includes/header.php';
             background: #f0f7ff;
             padding: 15px;
             border-radius: 4px;
-            border-left: 4px solid #2196F3;
+            border-left: 4px solid #f3c7c4;
         }
         .comment-header {
             display: flex;
@@ -245,7 +245,7 @@ include 'includes/header.php';
         }
         .comment-author {
             font-weight: bold;
-            color: #2196F3;
+            color: #f3c7c4;
         }
         .comment-date {
             font-size: 12px;
@@ -275,7 +275,7 @@ include 'includes/header.php';
         .comment-form button {
             margin-top: 10px;
             padding: 8px 20px;
-            background: #2196F3;
+            background: #f3c7c4;
             color: white;
             border: none;
             border-radius: 4px;
@@ -283,7 +283,7 @@ include 'includes/header.php';
             font-weight: bold;
         }
         .comment-form button:hover {
-            background: #0b7dda;
+            background: #e0a7a4;
         }
         .empty-state {
             text-align: center;
@@ -302,14 +302,14 @@ include 'includes/header.php';
             display: inline-block;
             margin-top: 20px;
             padding: 12px 24px;
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
             text-decoration: none;
             border-radius: 4px;
             font-weight: bold;
         }
         .btn-create-cap:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
     </style>
         
@@ -349,11 +349,16 @@ include 'includes/header.php';
         <!-- CAP list (Requirement 6.1, 6.2, 6.3) -->
         <?php if (empty($caps)): ?>
             <div class="empty-state">
-                <div class="empty-state-icon">📝</div>
+                <div class="empty-state-icon">
+                    <i data-lucide="file-text" style="width: 64px; height: 64px; color: #ccc;"></i>
+                </div>
                 <h3>CAP投稿がありません</h3>
                 <?php if ($isOwnTimeline): ?>
                     <p>最初のCAP投稿を作成しましょう。</p>
-                    <a href="create_cap.php" class="btn-create-cap">CAP投稿を作成</a>
+                    <a href="create_cap.php" class="btn-create-cap" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <i data-lucide="edit" style="width: 18px; height: 18px;"></i>
+                        <span>CAP投稿を作成</span>
+                    </a>
                 <?php else: ?>
                     <p><?php echo sanitizeOutput($targetUser['name']); ?>さんはまだCAP投稿をしていません。</p>
                 <?php endif; ?>
@@ -386,17 +391,26 @@ include 'includes/header.php';
                         <!-- CAP content (Requirement 6.2) -->
                         <div class="cap-content">
                             <div class="cap-section">
-                                <div class="cap-section-title">📊 分析</div>
+                                <div class="cap-section-title" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="bar-chart" style="width: 16px; height: 16px;"></i>
+                                    <span>分析</span>
+                                </div>
                                 <div class="cap-section-content"><?php echo sanitizeOutput($cap['analysis']); ?></div>
                             </div>
                             
                             <div class="cap-section">
-                                <div class="cap-section-title">🎯 改善方向</div>
+                                <div class="cap-section-title" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="target" style="width: 16px; height: 16px;"></i>
+                                    <span>改善方向</span>
+                                </div>
                                 <div class="cap-section-content"><?php echo sanitizeOutput($cap['improve_direction']); ?></div>
                             </div>
                             
                             <div class="cap-section">
-                                <div class="cap-section-title">📝 計画</div>
+                                <div class="cap-section-title" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="clipboard-list" style="width: 16px; height: 16px;"></i>
+                                    <span>計画</span>
+                                </div>
                                 <div class="cap-section-content"><?php echo sanitizeOutput($cap['plan']); ?></div>
                             </div>
                         </div>
@@ -404,8 +418,9 @@ include 'includes/header.php';
                         <!-- Comments section (Requirement 6.3, 6.6, 7.5) -->
                         <div class="cap-comments">
                             <div class="comments-header">
-                                <div class="comments-count">
-                                    💬 コメント (<?php echo $cap['comment_count']; ?>)
+                                <div class="comments-count" style="display: flex; align-items: center; gap: 6px;">
+                                    <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
+                                    <span>コメント (<?php echo $cap['comment_count']; ?>)</span>
                                 </div>
                             </div>
                             
@@ -442,7 +457,10 @@ include 'includes/header.php';
                                     <input type="hidden" name="to_cap_id" value="<?php echo $cap['id']; ?>">
                                     <input type="hidden" name="to_user_id" value="<?php echo $targetUserId; ?>">
                                     <textarea name="comment" placeholder="コメントを入力..." required></textarea>
-                                    <button type="submit">コメントを投稿</button>
+                                    <button type="submit" style="display: inline-flex; align-items: center; gap: 6px;">
+                                        <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                                        <span>コメントを投稿</span>
+                                    </button>
                                 </form>
                             <?php endif; ?>
                         </div>

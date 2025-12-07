@@ -14,7 +14,7 @@ require_once __DIR__ . '/dbconnect.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Connection Test</title>
+    <title>OURO - Database Connection Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,7 +67,7 @@ require_once __DIR__ . '/dbconnect.php';
     </style>
 </head>
 <body>
-    <h1>CAP System - Database Connection Test</h1>
+    <h1>OURO - Database Connection Test</h1>
     
     <div class="success">
         ✓ データベース接続成功！
@@ -99,7 +99,7 @@ require_once __DIR__ . '/dbconnect.php';
         
         echo "</table>";
         
-        // Display CAP system tables structure
+        // Display OURO tables structure
         $capTables = ['users', 'issues', 'caps', 'comments'];
         
         foreach ($capTables as $table) {

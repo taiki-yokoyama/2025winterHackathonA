@@ -104,7 +104,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -145,7 +145,7 @@ include 'includes/header.php';
         }
         .form-input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .form-select {
             width: 100%;
@@ -158,7 +158,7 @@ include 'includes/header.php';
         }
         .form-select:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .form-help {
             font-size: 14px;
@@ -189,7 +189,7 @@ include 'includes/header.php';
         .btn-submit {
             width: 100%;
             padding: 12px;
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
             border: none;
             border-radius: 4px;
@@ -198,7 +198,7 @@ include 'includes/header.php';
             font-weight: bold;
         }
         .btn-submit:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
         .btn-cancel {
             width: 100%;
@@ -246,12 +246,18 @@ include 'includes/header.php';
     </style>
         
         <div class="form-container">
-            <h2 class="form-title">新しい課題を作成</h2>
+            <h2 class="form-title" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i data-lucide="plus-circle" style="width: 28px; height: 28px; color: #f3c7c4;"></i>
+                <span>新しい課題を作成</span>
+            </h2>
             
-            <!-- Note about no editing/deleting (Requirement 3.7) -->
-            <div class="note-box">
-                <strong>注意:</strong>
-                課題は作成後、編集・削除できません。慎重に入力してください。
+            
+            <div class="note-box" style="display: flex; align-items: flex-start; gap: 10px; background: #e3f2fd; border-color: #2196F3; color: #0d47a1;">
+                <i data-lucide="users" style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+                <div>
+                    <strong>チーム共有:</strong>
+                    作成した課題はチーム全員に共有されます。チームメンバー全員がこの課題に対してCAP投稿を行い、お互いに評価を送り合うことができます。
+                </div>
             </div>
             
             <?php if (!empty($errors)): ?>
@@ -266,14 +272,17 @@ include 'includes/header.php';
             
             <form method="POST" action="create_issue.php" id="issueForm">
                 <div class="form-group">
-                    <label for="name" class="form-label">課題名 <span style="color: red;">*</span></label>
+                    <label for="name" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="target" style="width: 16px; height: 16px;"></i>
+                        <span>課題名 <span style="color: red;">*</span></span>
+                    </label>
                     <input 
                         type="text" 
                         id="name" 
                         name="name" 
                         class="form-input" 
                         value="<?php echo sanitizeOutput($formData['name'] ?? ''); ?>"
-                        placeholder="例: 体重管理、勉強時間、睡眠時間"
+                        placeholder="例: 稼働時間が足りない、本音が言えていない"
                         required
                         maxlength="255"
                     >
@@ -281,7 +290,10 @@ include 'includes/header.php';
                 </div>
                 
                 <div class="form-group">
-                    <label for="metric_type" class="form-label">指標タイプ <span style="color: red;">*</span></label>
+                    <label for="metric_type" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="sliders" style="width: 16px; height: 16px;"></i>
+                        <span>指標タイプ <span style="color: red;">*</span></span>
+                    </label>
                     <select 
                         id="metric_type" 
                         name="metric_type" 
@@ -304,15 +316,18 @@ include 'includes/header.php';
                         <strong>指標タイプについて:</strong>
                         <ul>
                             <li><strong>パーセンテージ:</strong> 達成率や進捗率など（例: 目標達成率 75%）</li>
-                            <li><strong>五段階尺度:</strong> 満足度や評価など（例: 睡眠の質 4/5）</li>
-                            <li><strong>数値:</strong> 具体的な数値で測定（例: 体重 65kg、勉強時間 120分）</li>
+                            <li><strong>五段階尺度:</strong> 満足度や評価など（例: どれだけできたか 4/5）</li>
+                            <li><strong>数値:</strong> 具体的な数値で測定（例: 稼働時間 120分）</li>
                         </ul>
                     </div>
                 </div>
                 
                 <!-- Unit field (only shown for numeric type) -->
                 <div class="form-group unit-field" id="unitField">
-                    <label for="unit" class="form-label">単位（オプション）</label>
+                    <label for="unit" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="tag" style="width: 16px; height: 16px;"></i>
+                        <span>単位（オプション）</span>
+                    </label>
                     <input 
                         type="text" 
                         id="unit" 
@@ -325,12 +340,23 @@ include 'includes/header.php';
                     <div class="form-help">数値型の場合、単位を指定できます（最大50文字）</div>
                 </div>
                 
-                <button type="submit" class="btn-submit">課題を作成</button>
-                <a href="top.php" class="btn-cancel">キャンセル</a>
+                <button type="submit" class="btn-submit" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                    <span>課題を作成</span>
+                </button>
+                <a href="top.php" class="btn-cancel" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="x-circle" style="width: 18px; height: 18px;"></i>
+                    <span>キャンセル</span>
+                </a>
             </form>
         </div>
 
 <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+        
         // Show/hide unit field based on metric type selection
         document.getElementById('metric_type').addEventListener('change', function() {
             const unitField = document.getElementById('unitField');

@@ -3,6 +3,7 @@
  * Create CAP Page for CAP System
  * 
  * Handles CAP creation for multiple issues simultaneously.
+ * Now includes peer evaluation feature for team members.
  * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10
  */
 
@@ -14,10 +15,14 @@ requireAuth();
 // Get current user
 $currentUser = getCurrentUser($dbh);
 
+// Get team members (excluding current user)
+$teamMembers = getTeamMembers($dbh, $currentUser['team_id'], $currentUser['id']);
+
 // Handle form submission (Requirement 4.6, 4.7, 4.8)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
     $capsData = [];
+    $peerEvaluationsData = [];
     
     // Get all issues for validation
     $userIssues = getUserIssues($dbh, $currentUser['id']);
@@ -60,12 +65,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'improve_direction' => $improveDirection,
                 'plan' => $plan
             ];
+            
+            // Collect peer evaluations for this issue
+            foreach ($teamMembers as $member) {
+                $peerValueKey = "peer_value_{$issueId}_{$member['id']}";
+                if (isset($_POST[$peerValueKey]) && $_POST[$peerValueKey] !== '') {
+                    $peerValue = $_POST[$peerValueKey];
+                    if (validateNumeric($peerValue)) {
+                        $peerEvaluationsData[] = [
+                            'target_user_id' => $member['id'],
+                            'issue_id' => $issueId,
+                            'value' => $peerValue
+                        ];
+                    }
+                }
+            }
         }
     }
     
-    // If validation passes, create all CAPs (Requirement 4.7, 4.8)
+    // If validation passes, create all CAPs and peer evaluations (Requirement 4.7, 4.8)
     if (empty($errors)) {
         $allSuccess = true;
+        $createdCapIds = [];
         
         foreach ($capsData as $capData) {
             $capId = createCAP(
@@ -81,6 +102,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$capId) {
                 $allSuccess = false;
                 break;
+            }
+            
+            $createdCapIds[$capData['issue_id']] = $capId;
+        }
+        
+        // Create peer evaluations
+        if ($allSuccess && !empty($peerEvaluationsData)) {
+            foreach ($peerEvaluationsData as $peerData) {
+                $capIdForPeer = $createdCapIds[$peerData['issue_id']] ?? null;
+                $peerId = createPeerEvaluation(
+                    $dbh,
+                    $currentUser['id'],
+                    $peerData['target_user_id'],
+                    $peerData['issue_id'],
+                    $peerData['value'],
+                    $capIdForPeer
+                );
+                
+                if (!$peerId) {
+                    // Log error but don't fail the entire operation
+                    error_log('Failed to create peer evaluation');
+                }
             }
         }
         
@@ -163,7 +206,7 @@ include 'includes/header.php';
         }
         .nav a {
             text-decoration: none;
-            color: #2196F3;
+            color: #f3c7c4;
             padding: 8px 16px;
             border-radius: 4px;
             transition: background 0.3s;
@@ -208,7 +251,7 @@ include 'includes/header.php';
         .issue-card h3 {
             margin-top: 0;
             color: #333;
-            border-bottom: 2px solid #4CAF50;
+            border-bottom: 2px solid #f3c7c4;
             padding-bottom: 10px;
         }
         .issue-meta {
@@ -235,7 +278,7 @@ include 'includes/header.php';
         }
         .form-input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .form-textarea {
             width: 100%;
@@ -249,7 +292,7 @@ include 'includes/header.php';
         }
         .form-textarea:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #f3c7c4;
         }
         .chart-container {
             margin: 20px 0;
@@ -276,18 +319,18 @@ include 'includes/header.php';
             font-weight: bold;
         }
         .btn-primary {
-            background: #4CAF50;
+            background: #f3c7c4;
             color: white;
         }
         .btn-primary:hover {
-            background: #45a049;
+            background: #e0a7a4;
         }
         .btn-secondary {
-            background: #2196F3;
+            background: #f3c7c4;
             color: white;
         }
         .btn-secondary:hover {
-            background: #0b7dda;
+            background: #e0a7a4;
         }
         .btn-cancel {
             background: #9E9E9E;
@@ -310,7 +353,7 @@ include 'includes/header.php';
         }
         .note-box {
             background: #e3f2fd;
-            border: 1px solid #2196F3;
+            border: 1px solid #f3c7c4;
             color: #0d47a1;
             padding: 15px;
             border-radius: 4px;
@@ -326,10 +369,6 @@ include 'includes/header.php';
             <h2 class="form-title">CAP投稿を作成</h2>
             <div class="step-indicator" id="stepIndicator">ステップ 1/4: Check値の入力</div>
             
-            <div class="note-box">
-                <strong>注意:</strong>
-                CAP投稿は作成後、編集・削除できません。全ての課題について慎重に入力してください。
-            </div>
             
             <?php if (!empty($errors)): ?>
                 <div class="error-messages">
@@ -344,7 +383,7 @@ include 'includes/header.php';
             <form method="POST" action="create_cap.php" id="capForm">
                 <!-- Step 1: Check値入力 (Requirement 4.2) -->
                 <div class="step active" id="step1">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">全ての課題のCheck値を入力してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">全ての課題のCheck値を入力してください</h3>
                     <?php foreach ($issuesWithHistory as $data): 
                         $issue = $data['issue'];
                         $issueId = $issue['id'];
@@ -362,9 +401,12 @@ include 'includes/header.php';
                                     echo $typeLabels[$issue['metric_type']];
                                 ?>
                             </div>
+                            
+                            <!-- 自分のCheck値 -->
                             <div class="form-group">
                                 <label for="value_<?php echo $issueId; ?>" class="form-label">
-                                    Check値 <span style="color: red;">*</span>
+                                    <i data-lucide="user" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i>
+                                    あなたのCheck値 <span style="color: red;">*</span>
                                 </label>
                                 <input 
                                     type="number" 
@@ -382,6 +424,40 @@ include 'includes/header.php';
                                     <?php endif; ?>
                                 >
                             </div>
+                            
+                            <!-- チームメンバーへの評価 -->
+                            <?php if (!empty($teamMembers)): ?>
+                            <div class="peer-evaluation-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ddd;">
+                                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                                    <i data-lucide="users" style="width: 18px; height: 18px; color: #2196F3;"></i>
+                                    <strong style="color: #555;">チームメンバーへの評価</strong>
+                                    <span style="font-size: 12px; color: #999;">(任意)</span>
+                                </div>
+                                <div class="peer-members-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                                    <?php foreach ($teamMembers as $member): ?>
+                                    <div class="peer-member-item" style="background: #f9f9f9; padding: 12px; border-radius: 6px;">
+                                        <label for="peer_value_<?php echo $issueId; ?>_<?php echo $member['id']; ?>" style="display: block; margin-bottom: 8px; font-size: 14px; color: #333;">
+                                            <?php echo sanitizeOutput($member['name']); ?>さん
+                                        </label>
+                                        <input 
+                                            type="number" 
+                                            step="0.01"
+                                            id="peer_value_<?php echo $issueId; ?>_<?php echo $member['id']; ?>" 
+                                            name="peer_value_<?php echo $issueId; ?>_<?php echo $member['id']; ?>" 
+                                            class="form-input peer-value" 
+                                            style="font-size: 14px; padding: 8px;"
+                                            placeholder="評価値"
+                                            <?php if ($issue['metric_type'] === 'percentage'): ?>
+                                                min="0" max="100"
+                                            <?php elseif ($issue['metric_type'] === 'scale_5'): ?>
+                                                min="1" max="5" step="1"
+                                            <?php endif; ?>
+                                        >
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -394,7 +470,7 @@ include 'includes/header.php';
                 <!-- Requirement 5.5: 五段階尺度: 適切なグラフ形式 -->
                 <!-- Requirement 5.6: 新規Check値のプレビュー表示 -->
                 <div class="step" id="step2">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">推移グラフを確認してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">推移グラフを確認してください</h3>
                     <div class="note-box" style="background: #fff3cd; border-color: #ffc107; color: #856404;">
                         <strong>グラフについて:</strong>
                         過去8週間のデータと今回入力した値（新規）を表示しています。データが少ない場合は、存在するデータのみ表示されます。
@@ -427,7 +503,7 @@ include 'includes/header.php';
                 
                 <!-- Step 3: Action入力 (Requirement 4.2) -->
                 <div class="step" id="step3">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">分析と改善方向を入力してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">分析と改善方向を入力してください</h3>
                     <?php foreach ($issuesWithHistory as $data): 
                         $issue = $data['issue'];
                         $issueId = $issue['id'];
@@ -464,7 +540,7 @@ include 'includes/header.php';
                 
                 <!-- Step 4: Plan入力 (Requirement 4.2) -->
                 <div class="step" id="step4">
-                    <h3 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">次の計画を入力してください</h3>
+                    <h3 style="text-align: center; color: #f3c7c4; margin-bottom: 30px;">次の計画を入力してください</h3>
                     <?php foreach ($issuesWithHistory as $data): 
                         $issue = $data['issue'];
                         $issueId = $issue['id'];
