@@ -184,17 +184,38 @@ body {
     margin-bottom: 30px;
     color: #333;
     text-align: center;
-.comment-item {
-    background: rgba(243,199,196,0.04);
-    padding: 15px;
-.form-select {
-    border-left: 4px solid var(--theme);
-    padding: 10px;
-
-.comment-author {
-    font-weight: bold;
-    color: var(--theme);
 }
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    background: white;
+    transition: border-color 0.3s;
 }
 
 .form-input:focus,
