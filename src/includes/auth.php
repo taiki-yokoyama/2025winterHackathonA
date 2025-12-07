@@ -49,7 +49,7 @@ function getCurrentUser($dbh) {
     }
     
     try {
-        $stmt = $dbh->prepare('SELECT id, email, name, created_at FROM users WHERE id = ?');
+        $stmt = $dbh->prepare('SELECT id, email, name, team_id, created_at FROM users WHERE id = ?');
         $stmt->execute([$userId]);
         return $stmt->fetch();
     } catch (PDOException $e) {

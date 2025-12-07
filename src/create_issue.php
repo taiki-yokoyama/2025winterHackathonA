@@ -260,6 +260,14 @@ include 'includes/header.php';
                 </div>
             </div>
             
+            <div class="note-box" style="display: flex; align-items: flex-start; gap: 10px; background: #e3f2fd; border-color: #2196F3; color: #0d47a1;">
+                <i data-lucide="users" style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+                <div>
+                    <strong>チーム共有:</strong>
+                    作成した課題はチーム全員に共有されます。チームメンバー全員がこの課題に対してCAP投稿を行い、お互いに評価を送り合うことができます。
+                </div>
+            </div>
+            
             <?php if (!empty($errors)): ?>
                 <div class="error-messages">
                     <ul>

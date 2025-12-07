@@ -3,6 +3,7 @@
  * Top Page (Dashboard) for CAP System
  * 
  * Displays user's issues, recent comments, and summary graphs.
+ * Now includes peer evaluations on graphs.
  * Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6
  */
 
@@ -17,11 +18,15 @@ $currentUser = getCurrentUser($dbh);
 // Get user's issues with latest check values (Requirements 8.1, 8.2)
 $issues = getUserIssues($dbh, $currentUser['id']);
 
-// Add latest check value and recent CAPs to each issue (Requirements 8.2, 8.5, 8.6)
+// Add latest check value, recent CAPs, and peer evaluations to each issue (Requirements 8.2, 8.5, 8.6)
 foreach ($issues as &$issue) {
     $issue['latest_value'] = getLatestCheckValue($dbh, $issue['id']);
-    // Get recent 8 weeks of CAPs for graph display (Requirements 8.5, 8.6)
-    $issue['recent_caps'] = getRecentCAPsForIssue($dbh, $issue['id'], 8);
+    // Get recent 8 weeks of CAPs for graph display (自己評価)
+    $issue['recent_caps'] = getRecentCAPsForIssue($dbh, $issue['id'], 8, $currentUser['id']);
+    // Get recent peer evaluations for graph display (他者評価)
+    $issue['peer_evaluations'] = getRecentPeerEvaluationsForGraph($dbh, $currentUser['id'], $issue['id'], 8);
+    // Get latest peer evaluation average
+    $issue['latest_peer_value'] = getLatestPeerEvaluationAverage($dbh, $currentUser['id'], $issue['id']);
 }
 unset($issue); // Break reference
 
@@ -316,7 +321,7 @@ include 'includes/header.php';
         <!-- Issues Section -->
         <div class="section">
             <div class="section-header">
-                <h2 class="section-title">あなたの課題</h2>
+                <h2 class="section-title">あなたのチームの課題</h2>
                 <a href="create_issue.php" class="btn-create">
                     <i data-lucide="plus-circle" class="btn-icon"></i>
                     <span>新しい課題を作成</span>
@@ -369,6 +374,23 @@ include 'includes/header.php';
                                         <?php 
                                         if ($issue['latest_value'] !== null) {
                                             echo sanitizeOutput($issue['latest_value']);
+                                            if ($issue['metric_type'] === 'percentage') {
+                                                echo '%';
+                                            } elseif ($issue['unit']) {
+                                                echo sanitizeOutput($issue['unit']);
+                                            }
+                                        } else {
+                                            echo 'データなし';
+                                        }
+                                        ?>
+                                    </strong>
+                                </div>
+                                <div class="issue-meta-item">
+                                    <span>他者評価平均:</span>
+                                    <strong style="color: #FF9800;">
+                                        <?php 
+                                        if ($issue['latest_peer_value'] !== null) {
+                                            echo number_format($issue['latest_peer_value'], 1);
                                             if ($issue['metric_type'] === 'percentage') {
                                                 echo '%';
                                             } elseif ($issue['unit']) {
@@ -441,6 +463,14 @@ include 'includes/header.php';
                 <h2 class="section-title">課題の推移グラフ</h2>
             </div>
             
+            <div style="background: #e3f2fd; padding: 10px 15px; border-radius: 4px; margin-bottom: 20px; font-size: 14px;">
+                <i data-lucide="info" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"></i>
+                <span style="vertical-align: middle;">
+                    <strong style="color: rgb(75, 192, 192);">━━</strong> 自己評価 / 
+                    <strong style="color: rgb(255, 159, 64);">- - -</strong> 他者評価（チームメンバーからの平均）
+                </span>
+            </div>
+            
             <?php if (empty($issues)): ?>
                 <div class="empty-state">
                     <div class="empty-state-icon">
@@ -453,7 +483,7 @@ include 'includes/header.php';
                     <?php foreach ($issues as $issue): ?>
                         <div class="graph-item">
                             <h3 class="graph-title"><?php echo sanitizeOutput($issue['name']); ?></h3>
-                            <?php if (empty($issue['recent_caps'])): ?>
+                            <?php if (empty($issue['recent_caps']) && empty($issue['peer_evaluations'])): ?>
                                 <div class="graph-empty">
                                     <p>データがありません</p>
                                     <p class="graph-empty-hint">CAP投稿を作成すると、グラフが表示されます。</p>
@@ -472,41 +502,78 @@ include 'includes/header.php';
 
         // Initialize charts for each issue with data
         <?php foreach ($issues as $issue): ?>
-            <?php if (!empty($issue['recent_caps'])): ?>
+            <?php if (!empty($issue['recent_caps']) || !empty($issue['peer_evaluations'])): ?>
                 window.addEventListener('load', function() {
                     const ctx = document.getElementById('chart-<?php echo $issue['id']; ?>');
                     if (!ctx) return;
                     
-                    const labels = <?php echo json_encode(array_map(function($cap) {
+                    // 自己評価データ
+                    const selfLabels = <?php echo json_encode(array_map(function($cap) {
                         return date('m/d', strtotime($cap['created_at']));
                     }, $issue['recent_caps'])); ?>;
                     
-                    const data = <?php echo json_encode(array_map(function($cap) {
+                    const selfData = <?php echo json_encode(array_map(function($cap) {
                         return floatval($cap['value']);
                     }, $issue['recent_caps'])); ?>;
                     
+                    // 他者評価データ
+                    const peerLabels = <?php echo json_encode(array_map(function($pe) {
+                        return date('m/d', strtotime($pe['eval_date']));
+                    }, $issue['peer_evaluations'])); ?>;
+                    
+                    const peerData = <?php echo json_encode(array_map(function($pe) {
+                        return floatval($pe['avg_value']);
+                    }, $issue['peer_evaluations'])); ?>;
+                    
+                    // 全ラベルをマージして一意にする
+                    const allLabelsSet = new Set([...selfLabels, ...peerLabels]);
+                    const allLabels = Array.from(allLabelsSet).sort();
+                    
+                    // 各データセットをラベルに合わせてマッピング
+                    const selfDataMap = {};
+                    selfLabels.forEach((label, i) => { selfDataMap[label] = selfData[i]; });
+                    const selfAligned = allLabels.map(l => selfDataMap[l] !== undefined ? selfDataMap[l] : null);
+                    
+                    const peerDataMap = {};
+                    peerLabels.forEach((label, i) => { peerDataMap[label] = peerData[i]; });
+                    const peerAligned = allLabels.map(l => peerDataMap[l] !== undefined ? peerDataMap[l] : null);
+                    
                     const metricType = '<?php echo $issue['metric_type']; ?>';
                     
-                    // Determine chart type and configuration based on metric type
+                    // Chart configuration with both datasets
                     let chartConfig = {
                         type: 'line',
                         data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Check値',
-                                data: data,
-                                borderColor: 'rgb(75, 192, 192)',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                tension: 0.1,
-                                fill: true
-                            }]
+                            labels: allLabels,
+                            datasets: [
+                                {
+                                    label: '自己評価',
+                                    data: selfAligned,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    tension: 0.1,
+                                    fill: false,
+                                    spanGaps: true
+                                },
+                                {
+                                    label: '他者評価',
+                                    data: peerAligned,
+                                    borderColor: 'rgb(255, 159, 64)',
+                                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                                    tension: 0.1,
+                                    fill: false,
+                                    borderDash: [5, 5],
+                                    spanGaps: true
+                                }
+                            ]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: true,
                             plugins: {
                                 legend: {
-                                    display: false
+                                    display: true,
+                                    position: 'top'
                                 },
                                 title: {
                                     display: false
