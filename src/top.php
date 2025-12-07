@@ -297,19 +297,6 @@ include 'includes/header.php';
         }
     </style>
         
-        <div class="welcome">
-            <h2>ようこそ、<?php echo sanitizeOutput($currentUser['name']); ?>さん</h2>
-            <p>OUROへようこそ。継続的改善サイクルを記録・追跡しましょう。</p>
-            <?php if (!empty($issues)): ?>
-                <p style="margin-top: 15px;">
-                    <a href="create_cap.php" class="btn-create" style="display: inline-flex;">
-                        <i data-lucide="edit" class="btn-icon"></i>
-                        <span>CAP投稿を作成</span>
-                    </a>
-                </p>
-            <?php endif; ?>
-        </div>
-        
         <?php if ($successMessage): ?>
             <div class="success-message">
                 <?php echo sanitizeOutput($successMessage); ?>

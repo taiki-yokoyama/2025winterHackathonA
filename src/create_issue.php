@@ -251,14 +251,6 @@ include 'includes/header.php';
                 <span>新しい課題を作成</span>
             </h2>
             
-            <!-- Note about no editing/deleting (Requirement 3.7) -->
-            <div class="note-box" style="display: flex; align-items: flex-start; gap: 10px;">
-                <i data-lucide="alert-circle" style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
-                <div>
-                    <strong>注意:</strong>
-                    課題は作成後、編集・削除できません。慎重に入力してください。
-                </div>
-            </div>
             
             <div class="note-box" style="display: flex; align-items: flex-start; gap: 10px; background: #e3f2fd; border-color: #2196F3; color: #0d47a1;">
                 <i data-lucide="users" style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
