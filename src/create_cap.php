@@ -369,10 +369,6 @@ include 'includes/header.php';
             <h2 class="form-title">CAP投稿を作成</h2>
             <div class="step-indicator" id="stepIndicator">ステップ 1/4: Check値の入力</div>
             
-            <div class="note-box">
-                <strong>注意:</strong>
-                CAP投稿は作成後、編集・削除できません。全ての課題について慎重に入力してください。
-            </div>
             
             <?php if (!empty($errors)): ?>
                 <div class="error-messages">
