@@ -221,7 +221,10 @@ include 'includes/header.php';
     </style>
         
         <div class="page-header">
-            <h2>ユーザー一覧</h2>
+            <h2 style="display: flex; align-items: center; gap: 10px;">
+                <i data-lucide="users" style="width: 28px; height: 28px; color: #2196F3;"></i>
+                <span>ユーザー一覧</span>
+            </h2>
             <p>他のユーザーのTimelineを閲覧して、改善活動を参考にしましょう。</p>
         </div>
         
@@ -234,7 +237,9 @@ include 'includes/header.php';
         <div class="users-section">
             <?php if (empty($users)): ?>
                 <div class="empty-state">
-                    <div class="empty-state-icon">👥</div>
+                    <div class="empty-state-icon">
+                        <i data-lucide="users" style="width: 64px; height: 64px; color: #ccc;"></i>
+                    </div>
                     <p>ユーザーが見つかりません。</p>
                 </div>
             <?php else: ?>

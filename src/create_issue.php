@@ -246,12 +246,18 @@ include 'includes/header.php';
     </style>
         
         <div class="form-container">
-            <h2 class="form-title">新しい課題を作成</h2>
+            <h2 class="form-title" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i data-lucide="plus-circle" style="width: 28px; height: 28px; color: #4CAF50;"></i>
+                <span>新しい課題を作成</span>
+            </h2>
             
             <!-- Note about no editing/deleting (Requirement 3.7) -->
-            <div class="note-box">
-                <strong>注意:</strong>
-                課題は作成後、編集・削除できません。慎重に入力してください。
+            <div class="note-box" style="display: flex; align-items: flex-start; gap: 10px;">
+                <i data-lucide="alert-circle" style="width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+                <div>
+                    <strong>注意:</strong>
+                    課題は作成後、編集・削除できません。慎重に入力してください。
+                </div>
             </div>
             
             <?php if (!empty($errors)): ?>
@@ -266,7 +272,10 @@ include 'includes/header.php';
             
             <form method="POST" action="create_issue.php" id="issueForm">
                 <div class="form-group">
-                    <label for="name" class="form-label">課題名 <span style="color: red;">*</span></label>
+                    <label for="name" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="target" style="width: 16px; height: 16px;"></i>
+                        <span>課題名 <span style="color: red;">*</span></span>
+                    </label>
                     <input 
                         type="text" 
                         id="name" 
@@ -281,7 +290,10 @@ include 'includes/header.php';
                 </div>
                 
                 <div class="form-group">
-                    <label for="metric_type" class="form-label">指標タイプ <span style="color: red;">*</span></label>
+                    <label for="metric_type" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="sliders" style="width: 16px; height: 16px;"></i>
+                        <span>指標タイプ <span style="color: red;">*</span></span>
+                    </label>
                     <select 
                         id="metric_type" 
                         name="metric_type" 
@@ -312,7 +324,10 @@ include 'includes/header.php';
                 
                 <!-- Unit field (only shown for numeric type) -->
                 <div class="form-group unit-field" id="unitField">
-                    <label for="unit" class="form-label">単位（オプション）</label>
+                    <label for="unit" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                        <i data-lucide="tag" style="width: 16px; height: 16px;"></i>
+                        <span>単位（オプション）</span>
+                    </label>
                     <input 
                         type="text" 
                         id="unit" 
@@ -325,12 +340,23 @@ include 'includes/header.php';
                     <div class="form-help">数値型の場合、単位を指定できます（最大50文字）</div>
                 </div>
                 
-                <button type="submit" class="btn-submit">課題を作成</button>
-                <a href="top.php" class="btn-cancel">キャンセル</a>
+                <button type="submit" class="btn-submit" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i>
+                    <span>課題を作成</span>
+                </button>
+                <a href="top.php" class="btn-cancel" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i data-lucide="x-circle" style="width: 18px; height: 18px;"></i>
+                    <span>キャンセル</span>
+                </a>
             </form>
         </div>
 
 <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+        
         // Show/hide unit field based on metric type selection
         document.getElementById('metric_type').addEventListener('change', function() {
             const unitField = document.getElementById('unitField');

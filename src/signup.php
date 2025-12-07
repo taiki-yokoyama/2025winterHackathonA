@@ -77,7 +77,10 @@ $pageTitle = 'サインアップ';
 include 'includes/header.php';
 ?>
     <div class="auth-container">
-        <h1 class="auth-title">サインアップ</h1>
+        <h1 class="auth-title" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <i data-lucide="user-plus" style="width: 32px; height: 32px; color: #4CAF50;"></i>
+            <span>サインアップ</span>
+        </h1>
         
         <?php if (!empty($errors)): ?>
             <div class="error-messages">
@@ -91,7 +94,10 @@ include 'includes/header.php';
         
         <form method="POST" action="signup.php">
             <div class="form-group">
-                <label for="email" class="form-label">メールアドレス</label>
+                <label for="email" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+                    <span>メールアドレス</span>
+                </label>
                 <input 
                     type="email" 
                     id="email" 
@@ -103,7 +109,10 @@ include 'includes/header.php';
             </div>
             
             <div class="form-group">
-                <label for="password" class="form-label">パスワード</label>
+                <label for="password" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
+                    <span>パスワード</span>
+                </label>
                 <input 
                     type="password" 
                     id="password" 
@@ -114,7 +123,10 @@ include 'includes/header.php';
             </div>
             
             <div class="form-group">
-                <label for="name" class="form-label">名前</label>
+                <label for="name" class="form-label" style="display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                    <span>名前</span>
+                </label>
                 <input 
                     type="text" 
                     id="name" 
@@ -125,12 +137,22 @@ include 'includes/header.php';
                 >
             </div>
             
-            <button type="submit" class="btn-submit">登録</button>
+            <button type="submit" class="btn-submit" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+                <span>登録</span>
+            </button>
         </form>
         
         <div class="auth-link">
             既にアカウントをお持ちですか？ <a href="login.php">ログイン</a>
         </div>
     </div>
+    
+    <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
 
 <?php include 'includes/footer.php'; ?>
