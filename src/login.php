@@ -67,7 +67,7 @@ include 'includes/header.php';
 ?>
     <div class="auth-container">
         <h1 class="auth-title" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <i data-lucide="log-in" style="width: 32px; height: 32px; color: #2196F3;"></i>
+            <i data-lucide="log-in" style="width: 32px; height: 32px; color: #f3c7c4;"></i>
             <span>ログイン</span>
         </h1>
         
