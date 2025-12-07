@@ -19,7 +19,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($pageTitle) ? sanitizeOutput($pageTitle) . ' - CAPシステム' : 'CAPシステム'; ?></title>
+    <title><?php echo isset($pageTitle) ? sanitizeOutput($pageTitle) . ' - OURO' : 'OURO'; ?></title>
+    <link rel="icon" href="assets/img/ロゴ.png" />
     <link rel="stylesheet" href="assets/styles/cap-system.css">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -34,11 +35,18 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 </head>
 <body>
     <div class="container">
-        <header class="header">
+        <header class="header" style="display:flex; align-items:center; justify-content:space-between; gap:4px; padding:8px 12px;">
             <h1 class="logo">
                 <a href="<?php echo $currentUser ? 'top.php' : 'login.php'; ?>" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
-                    <i data-lucide="target" style="width: 32px; height: 32px;"></i>
-                    <span>CAPシステム</span>
+                    <?php
+                        $logoRel = 'assets/img/ロゴ.png';
+                        $logoFile = __DIR__ . '/../' . $logoRel;
+                    ?>
+                    <?php if (file_exists($logoFile)): ?>
+                        <img src="<?php echo $logoRel; ?>" alt="OURO" style="height:88px; display:block;">
+                    <?php else: ?>
+                        <span>OURO</span>
+                    <?php endif; ?>
                 </a>
             </h1>
             <nav class="nav">
