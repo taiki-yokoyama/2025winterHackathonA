@@ -25,6 +25,23 @@ foreach ($issues as &$issue) {
 }
 unset($issue); // Break reference
 
+// Build a summary series across all issues so the user sees an overall progress graph
+$summary_map = [];
+$summary_is_percentage = false;
+foreach ($issues as $issue) {
+    if (empty($issue['recent_caps'])) continue;
+    if (isset($issue['metric_type']) && $issue['metric_type'] === 'percentage') {
+        $summary_is_percentage = true;
+    }
+    foreach ($issue['recent_caps'] as $cap) {
+        $d = date('Y-m-d', strtotime($cap['created_at']));
+        $summary_map[$d][] = floatval($cap['value']);
+    }
+}
+ksort($summary_map);
+$summary_labels = array_map(function($d){ return date('m/d', strtotime($d)); }, array_keys($summary_map));
+$summary_values = array_map(function($vals){ return array_sum($vals) / count($vals); }, $summary_map);
+
 // Get comments for the user (Requirements 8.3, 8.4)
 $comments = getCommentsForUser($dbh, $currentUser['id'], 10); // Limit to 10 most recent
 
@@ -290,6 +307,8 @@ include 'includes/header.php';
                 <?php echo sanitizeOutput($successMessage); ?>
             </div>
         <?php endif; ?>
+
+        <!-- Overall Summary Graph removed per user request -->
         
         <!-- Issues Section -->
         <div class="section">
@@ -436,10 +455,12 @@ include 'includes/header.php';
         </div>
 
 <script>
+        // Overall summary chart removed
+
         // Initialize charts for each issue with data
         <?php foreach ($issues as $issue): ?>
             <?php if (!empty($issue['recent_caps'])): ?>
-                (function() {
+                window.addEventListener('load', function() {
                     const ctx = document.getElementById('chart-<?php echo $issue['id']; ?>');
                     if (!ctx) return;
                     
@@ -506,7 +527,7 @@ include 'includes/header.php';
                     }
                     
                     new Chart(ctx, chartConfig);
-                })();
+                });
             <?php endif; ?>
         <?php endforeach; ?>
     </script>
