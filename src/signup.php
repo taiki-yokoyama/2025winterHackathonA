@@ -69,90 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $errors = $_SESSION['errors'] ?? [];
 $formData = $_SESSION['form_data'] ?? [];
 unset($_SESSION['errors'], $_SESSION['form_data']);
+
+// Set page title
+$pageTitle = 'サインアップ';
+
+// Include header
+include 'includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>サインアップ - CAPシステム</title>
-    <link rel="stylesheet" href="assets/styles/common.css">
-    <style>
-        .auth-container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 30px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .auth-title {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-        .form-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-submit:hover {
-            background: #45a049;
-        }
-        .error-messages {
-            background: #ffebee;
-            border: 1px solid #f44336;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .error-messages ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .auth-link {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-        }
-        .auth-link a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        .auth-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
     <div class="auth-container">
         <h1 class="auth-title">サインアップ</h1>
         
@@ -209,5 +132,5 @@ unset($_SESSION['errors'], $_SESSION['form_data']);
             既にアカウントをお持ちですか？ <a href="login.php">ログイン</a>
         </div>
     </div>
-</body>
-</html>
+
+<?php include 'includes/footer.php'; ?>

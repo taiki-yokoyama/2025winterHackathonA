@@ -20,14 +20,14 @@ $users = getAllUsers($dbh);
 // Get success message from session
 $successMessage = $_SESSION['success'] ?? null;
 unset($_SESSION['success']);
+
+// Set page title
+$pageTitle = 'ユーザー一覧';
+
+// Include header
+include 'includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ユーザー一覧 - CAPシステム</title>
-    <link rel="stylesheet" href="assets/styles/common.css">
+
     <style>
         .container {
             max-width: 1200px;
@@ -219,17 +219,6 @@ unset($_SESSION['success']);
             font-size: 18px;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1>CAPシステム</h1>
-            <nav class="nav">
-                <a href="top.php">Top</a>
-                <a href="users.php">ユーザー一覧</a>
-                <a href="logout.php">ログアウト</a>
-            </nav>
-        </header>
         
         <div class="page-header">
             <h2>ユーザー一覧</h2>
@@ -294,6 +283,5 @@ unset($_SESSION['success']);
                 </div>
             <?php endif; ?>
         </div>
-    </div>
-</body>
-</html>
+
+<?php include 'includes/footer.php'; ?>

@@ -130,16 +130,15 @@ foreach ($userIssues as $issue) {
         'recent_caps' => $recentCAPs // 空配列の場合もあり（新規課題など）
     ];
 }
+
+// Set page title and additional scripts
+$pageTitle = 'CAP投稿作成';
+$additionalJS = ['https://cdn.jsdelivr.net/npm/chart.js', 'assets/scripts/cap_form.js'];
+
+// Include header
+include 'includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAP投稿作成 - CAPシステム</title>
-    <link rel="stylesheet" href="assets/styles/common.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets/scripts/cap_form.js" defer></script>
+
     <style>
         .container {
             max-width: 1200px;
@@ -322,17 +321,6 @@ foreach ($userIssues as $issue) {
             margin-bottom: 5px;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1>CAPシステム</h1>
-            <nav class="nav">
-                <a href="top.php">Top</a>
-                <a href="users.php">ユーザー一覧</a>
-                <a href="logout.php">ログアウト</a>
-            </nav>
-        </header>
         
         <div class="form-container">
             <h2 class="form-title">CAP投稿を作成</h2>
@@ -508,11 +496,10 @@ foreach ($userIssues as $issue) {
                 </div>
             </form>
         </div>
-    </div>
-    
-    <script>
+
+<script>
         // Store issue data for JavaScript (Requirement 4.3)
         const issuesData = <?php echo json_encode($issuesWithHistory); ?>;
     </script>
-</body>
-</html>
+
+<?php include 'includes/footer.php'; ?>

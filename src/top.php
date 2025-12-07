@@ -31,15 +31,15 @@ $comments = getCommentsForUser($dbh, $currentUser['id'], 10); // Limit to 10 mos
 // Get success message from session
 $successMessage = $_SESSION['success'] ?? null;
 unset($_SESSION['success']);
+
+// Set page title and additional scripts
+$pageTitle = 'Top';
+$additionalJS = ['https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'];
+
+// Include header
+include 'includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top - CAPシステム</title>
-    <link rel="stylesheet" href="assets/styles/common.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
     <style>
         .container {
             max-width: 1200px;
@@ -274,17 +274,6 @@ unset($_SESSION['success']);
             color: #bbb;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1>CAPシステム</h1>
-            <nav class="nav">
-                <a href="top.php">Top</a>
-                <a href="users.php">ユーザー一覧</a>
-                <a href="logout.php">ログアウト</a>
-            </nav>
-        </header>
         
         <div class="welcome">
             <h2>ようこそ、<?php echo sanitizeOutput($currentUser['name']); ?>さん</h2>
@@ -445,9 +434,8 @@ unset($_SESSION['success']);
                 </div>
             <?php endif; ?>
         </div>
-    </div>
-    
-    <script>
+
+<script>
         // Initialize charts for each issue with data
         <?php foreach ($issues as $issue): ?>
             <?php if (!empty($issue['recent_caps'])): ?>
@@ -522,5 +510,5 @@ unset($_SESSION['success']);
             <?php endif; ?>
         <?php endforeach; ?>
     </script>
-</body>
-</html>
+
+<?php include 'includes/footer.php'; ?>

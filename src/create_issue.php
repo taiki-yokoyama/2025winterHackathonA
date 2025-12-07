@@ -72,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $errors = $_SESSION['errors'] ?? [];
 $formData = $_SESSION['form_data'] ?? [];
 unset($_SESSION['errors'], $_SESSION['form_data']);
+
+// Set page title
+$pageTitle = '課題作成';
+
+// Include header
+include 'includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>課題作成 - CAPシステム</title>
-    <link rel="stylesheet" href="assets/styles/common.css">
+
     <style>
         .container {
             max-width: 1200px;
@@ -244,17 +244,6 @@ unset($_SESSION['errors'], $_SESSION['form_data']);
             margin-bottom: 5px;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header class="header">
-            <h1>CAPシステム</h1>
-            <nav class="nav">
-                <a href="top.php">Top</a>
-                <a href="users.php">ユーザー一覧</a>
-                <a href="logout.php">ログアウト</a>
-            </nav>
-        </header>
         
         <div class="form-container">
             <h2 class="form-title">新しい課題を作成</h2>
@@ -340,9 +329,8 @@ unset($_SESSION['errors'], $_SESSION['form_data']);
                 <a href="top.php" class="btn-cancel">キャンセル</a>
             </form>
         </div>
-    </div>
-    
-    <script>
+
+<script>
         // Show/hide unit field based on metric type selection
         document.getElementById('metric_type').addEventListener('change', function() {
             const unitField = document.getElementById('unitField');
@@ -363,5 +351,5 @@ unset($_SESSION['errors'], $_SESSION['form_data']);
             }
         });
     </script>
-</body>
-</html>
+
+<?php include 'includes/footer.php'; ?>
