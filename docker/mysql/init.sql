@@ -3,6 +3,63 @@ CREATE DATABASE posse;
 
 USE posse;
 
+-- CAP System Tables
+
+-- Users table
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL COMMENT '平文保存（プロトタイプ）',
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Issues table
+CREATE TABLE issues (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    metric_type ENUM('percentage', 'scale_5', 'numeric') NOT NULL,
+    unit VARCHAR(50) NULL COMMENT '数値型の場合の単位（例：回、cm）',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- CAPs table
+CREATE TABLE caps (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    issue_id INT NOT NULL,
+    value DECIMAL(10,2) NOT NULL COMMENT 'Check値（実測値）',
+    analysis TEXT NOT NULL COMMENT '分析内容',
+    improve_direction TEXT NOT NULL COMMENT '改善方向',
+    plan TEXT NOT NULL COMMENT '次の計画',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (issue_id) REFERENCES issues(id)
+);
+
+-- Comments table
+CREATE TABLE comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    from_user_id INT NOT NULL,
+    to_user_id INT NOT NULL,
+    to_cap_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (from_user_id) REFERENCES users(id),
+    FOREIGN KEY (to_user_id) REFERENCES users(id),
+    FOREIGN KEY (to_cap_id) REFERENCES caps(id)
+);
+
+-- Create indexes for performance optimization
+CREATE INDEX idx_issues_user_id ON issues(user_id);
+CREATE INDEX idx_caps_user_id ON caps(user_id);
+CREATE INDEX idx_caps_issue_id ON caps(issue_id);
+CREATE INDEX idx_comments_to_user_id ON comments(to_user_id);
+CREATE INDEX idx_comments_to_cap_id ON comments(to_cap_id);
+
+-- Old quiz tables (keeping for backward compatibility)
 CREATE TABLE questions(
     id INT PRIMARY KEY AUTO_INCREMENT,
     content VARCHAR(255) NOT NULL,

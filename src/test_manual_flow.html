@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手動テストチェックリスト - CAPシステム</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        .test-section {
+            background-color: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 3px solid #2196F3;
+            background-color: #f9f9f9;
+        }
+        .test-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.3);
+        }
+        .test-item label {
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .link-section {
+            background-color: #fff3cd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: 1px solid #ffc107;
+        }
+        .link-section a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 8px 15px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .link-section a:hover {
+            background-color: #0b7dda;
+        }
+        .note {
+            background-color: #e3f2fd;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+            font-style: italic;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .progress {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+        }
+        #progressBar {
+            width: 100%;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        #progressFill {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 CAPシステム - 手動テストチェックリスト</h1>
+    
+    <div class="progress">
+        <div>テスト進捗状況</div>
+        <div id="progressBar">
+            <div id="progressFill">0%</div>
+        </div>
+        <div id="progressText">0 / 0 完了</div>
+    </div>
+
+    <div class="link-section">
+        <strong>📌 テスト用リンク:</strong><br>
+        <a href="/signup.php" target="_blank">サインアップ</a>
+        <a href="/login.php" target="_blank">ログイン</a>
+        <a href="/top.php" target="_blank">Top画面</a>
+        <a href="/create_issue.php" target="_blank">Issue作成</a>
+        <a href="/create_cap.php" target="_blank">CAP作成</a>
+        <a href="/users.php" target="_blank">ユーザー一覧</a>
+        <a href="/logout.php" target="_blank">ログアウト</a>
+    </div>
+
+    <div class="test-section">
+        <h2>1️⃣ ユーザー登録（サインアップ）</h2>
+        <div class="note">
+            <strong>目的:</strong> 新規ユーザーアカウントの作成機能を確認<br>
+            <strong>要件:</strong> 1.1, 1.2, 1.3, 1.4
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test1-1">
+            <label for="test1-1">サインアップページ（/signup.php）にアクセスできる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test1-2">
+            <label for="test1-2">有効なメール、パスワード、名前を入力して登録できる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test1-3">
+            <label for="test1-3">登録成功後、Top画面にリダイレクトされる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test1-4">
+            <label for="test1-4">同じメールアドレスで再登録しようとするとエラーメッセージが表示される</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>2️⃣ ログイン・ログアウト</h2>
+        <div class="note">
+            <strong>目的:</strong> 認証機能の動作確認<br>
+            <strong>要件:</strong> 2.1, 2.2, 2.3, 2.4, 2.5
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test2-1">
+            <label for="test2-1">ログインページ（/login.php）にアクセスできる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test2-2">
+            <label for="test2-2">正しいメールとパスワードでログインできる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test2-3">
+            <label for="test2-3">ログイン成功後、Top画面にリダイレクトされる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test2-4">
+            <label for="test2-4">間違ったパスワードでログインしようとするとエラーメッセージが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test2-5">
+            <label for="test2-5">ログアウトボタンをクリックするとログアウトし、ログイン画面にリダイレクトされる</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>3️⃣ Issue（課題）作成</h2>
+        <div class="note">
+            <strong>目的:</strong> 改善したい課題の作成機能を確認<br>
+            <strong>要件:</strong> 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test3-1">
+            <label for="test3-1">Issue作成ページ（/create_issue.php）にアクセスできる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test3-2">
+            <label for="test3-2">パーセンテージ型のIssueを作成できる（例：体重管理）</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test3-3">
+            <label for="test3-3">五段階尺度型のIssueを作成できる（例：睡眠の質）</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test3-4">
+            <label for="test3-4">数値型（単位付き）のIssueを作成できる（例：勉強時間 - 単位：時間）</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test3-5">
+            <label for="test3-5">空の課題名で作成しようとするとエラーメッセージが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test3-6">
+            <label for="test3-6">Issue作成成功後、Top画面にリダイレクトされる</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>4️⃣ CAP投稿作成</h2>
+        <div class="note">
+            <strong>目的:</strong> 複数課題に対する同時CAP投稿機能を確認<br>
+            <strong>要件:</strong> 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-1">
+            <label for="test4-1">CAP作成ページ（/create_cap.php）にアクセスすると全Issueが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-2">
+            <label for="test4-2">ステップ1: 全課題のCheck値を入力できる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-3">
+            <label for="test4-3">ステップ2: 全課題のグラフが表示される（過去データ + 新規データプレビュー）</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-4">
+            <label for="test4-4">ステップ3: 全課題の分析と改善方向を入力できる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-5">
+            <label for="test4-5">ステップ4: 全課題の計画を入力できる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-6">
+            <label for="test4-6">「前へ」ボタンで前のステップに戻れる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-7">
+            <label for="test4-7">ページリロードなしで画面遷移が行われる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-8">
+            <label for="test4-8">必須項目が空の場合、エラーメッセージが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test4-9">
+            <label for="test4-9">全項目入力後、送信するとTimeline画面にリダイレクトされる</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>5️⃣ グラフ表示</h2>
+        <div class="note">
+            <strong>目的:</strong> CAP作成時のグラフ表示機能を確認<br>
+            <strong>要件:</strong> 5.1, 5.2, 5.3, 5.4, 5.5, 5.6
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test5-1">
+            <label for="test5-1">グラフに過去のCAP履歴が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test5-2">
+            <label for="test5-2">パーセンテージ型・数値型は折れ線グラフで表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test5-3">
+            <label for="test5-3">五段階尺度型は適切なグラフ形式で表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test5-4">
+            <label for="test5-4">新しいCheck値がグラフにプレビュー表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test5-5">
+            <label for="test5-5">データが少ない場合でもエラーなく表示される</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>6️⃣ Timeline画面</h2>
+        <div class="note">
+            <strong>目的:</strong> CAP投稿履歴の表示機能を確認<br>
+            <strong>要件:</strong> 6.1, 6.2, 6.3, 6.4, 6.5, 6.6
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test6-1">
+            <label for="test6-1">自分のTimeline画面で全CAP投稿が時系列で表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test6-2">
+            <label for="test6-2">各CAP投稿に課題名、Check値、分析、改善方向、計画、投稿日時が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test6-3">
+            <label for="test6-3">Issueタブをクリックすると、そのIssueのCAP投稿のみが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test6-4">
+            <label for="test6-4">コメント数が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test6-5">
+            <label for="test6-5">複数のコメントがある場合、全て表示される</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>7️⃣ コメント機能</h2>
+        <div class="note">
+            <strong>目的:</strong> CAP投稿へのコメント機能を確認<br>
+            <strong>要件:</strong> 7.1, 7.2, 7.3, 7.4, 7.5
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test7-1">
+            <label for="test7-1">他のユーザーのTimelineでCAP投稿にコメントを入力できる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test7-2">
+            <label for="test7-2">コメント送信後、Timeline画面が更新される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test7-3">
+            <label for="test7-3">投稿したコメントが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test7-4">
+            <label for="test7-4">コメントに送信者名と投稿日時が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test7-5">
+            <label for="test7-5">新しいコメントから順に表示される</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>8️⃣ Top画面（ダッシュボード）</h2>
+        <div class="note">
+            <strong>目的:</strong> ダッシュボード機能を確認<br>
+            <strong>要件:</strong> 8.1, 8.2, 8.3, 8.4, 8.5, 8.6
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test8-1">
+            <label for="test8-1">Top画面に自分の全課題が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test8-2">
+            <label for="test8-2">各課題に課題名、指標タイプ、最新Check値が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test8-3">
+            <label for="test8-3">自分宛のコメント一覧が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test8-4">
+            <label for="test8-4">コメントに送信者、内容、対象CAP、投稿日時が表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test8-5">
+            <label for="test8-5">各課題のサマリーグラフが表示される</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>9️⃣ ユーザー一覧</h2>
+        <div class="note">
+            <strong>目的:</strong> ユーザー一覧と他ユーザーのTimelineアクセス機能を確認<br>
+            <strong>要件:</strong> 9.1, 9.2, 9.3
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test9-1">
+            <label for="test9-1">ユーザー一覧ページ（/users.php）にアクセスできる</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test9-2">
+            <label for="test9-2">全ユーザーの名前とメールアドレスが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test9-3">
+            <label for="test9-3">ユーザーをクリックすると、そのユーザーのTimeline画面に遷移する</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔟 エラーハンドリング</h2>
+        <div class="note">
+            <strong>目的:</strong> エラー処理の動作確認<br>
+            <strong>要件:</strong> 3.3, 4.5, 10.2
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test10-1">
+            <label for="test10-1">バリデーションエラーが適切に表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test10-2">
+            <label for="test10-2">エラーメッセージが日本語で分かりやすい</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test10-3">
+            <label for="test10-3">エラー後、フォームの入力内容が保持される（可能な場合）</label>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>1️⃣1️⃣ UI/UX</h2>
+        <div class="note">
+            <strong>目的:</strong> ユーザーインターフェースの使いやすさを確認
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test11-1">
+            <label for="test11-1">ナビゲーションメニューが全ページで表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test11-2">
+            <label for="test11-2">ログイン状態に応じて適切なメニューが表示される</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test11-3">
+            <label for="test11-3">フォームのスタイリングが適切である</label>
+        </div>
+        <div class="test-item">
+            <input type="checkbox" id="test11-4">
+            <label for="test11-4">ボタンやリンクが分かりやすい</label>
+        </div>
+    </div>
+
+    <script>
+        // 進捗状況の更新
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+            const total = checkboxes.length;
+            const completed = checked.length;
+            const percentage = Math.round((completed / total) * 100);
+            
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressFill').textContent = percentage + '%';
+            document.getElementById('progressText').textContent = `${completed} / ${total} 完了`;
+        }
+
+        // チェックボックスの変更を監視
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateProgress);
+        });
+
+        // 初期状態の進捗を表示
+        updateProgress();
+
+        // ローカルストレージにチェック状態を保存
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            // 保存された状態を復元
+            const saved = localStorage.getItem(checkbox.id);
+            if (saved === 'true') {
+                checkbox.checked = true;
+            }
+            
+            // 変更時に保存
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(this.id, this.checked);
+                updateProgress();
+            });
+        });
+
+        // リセットボタン（オプション）
+        function resetChecklist() {
+            if (confirm('チェックリストをリセットしますか？')) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                    localStorage.removeItem(checkbox.id);
+                });
+                updateProgress();
+            }
+        }
+    </script>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <button onclick="resetChecklist()" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+            チェックリストをリセット
+        </button>
+    </div>
+
+    <div style="text-align: center; margin: 30px 0; padding: 20px; background-color: #e8f5e9; border-radius: 5px;">
+        <p style="font-size: 18px; margin: 0;">
+            <strong>✅ テスト完了後:</strong> 全ての項目にチェックが入ったら、開発者に報告してください。
+        </p>
+    </div>
+</body>
+</html>
